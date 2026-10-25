@@ -146,4 +146,4 @@
 
 - 파일: `src/assets/images/museum-official-logo.jpg` (964×401)
 - 원본: [박물관 로고 공식 페이지](https://museum.seoul.go.kr/www/intro/introLogo.jsp?sso=ok)에서 제공하는 [시그니처 국영문 상하조합(기본) 다운로드](https://museum.seoul.go.kr/www/down/file/introLogo_3_1.zip) 안의 JPG
-- 적용: 푸터 중앙 하단. 원본 비율과 색을 유지하며 CSS에서만 축소 표시.
+- 적용: 푸터 하단 문구와 같은 행의 중앙에 배치하고 밑변을 정렬. 원본 비율과 색을 유지하며 CSS에서만 축소 표시.
