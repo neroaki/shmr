@@ -11,15 +11,17 @@ export function Header() {
 
   useEffect(() => {
     const hero = document.querySelector<HTMLElement>('.hero')
+    const featured = document.querySelector<HTMLElement>('#featured')
     const header = headerRef.current
-    if (!hero || !header) return
+    if (!hero || !featured || !header) return
     let frame = 0
     let shown = false
     const update = () => {
       frame = 0
-      // A small dead band avoids flicker while reversing near the hero boundary.
+      // Reveal at the content boundary, after the hero's safety gap.
+      // A small dead band avoids flicker while reversing near that boundary.
       const threshold = header.offsetHeight + (shown ? 56 : 24)
-      const next = hero.getBoundingClientRect().bottom <= threshold
+      const next = featured.getBoundingClientRect().top <= threshold
       if (next === shown) return
       shown = next
       setVisible(next)
@@ -30,6 +32,7 @@ export function Header() {
     }
     const observer = new ResizeObserver(schedule)
     observer.observe(hero)
+    observer.observe(featured)
     observer.observe(header)
     window.addEventListener('scroll', schedule, { passive: true })
     window.addEventListener('resize', schedule)
