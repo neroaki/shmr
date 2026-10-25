@@ -57,20 +57,24 @@
   }
 }
 .archive-viewport { min-width: 0; min-height: 0; overflow: hidden; }
-.archive-items { display: flex; height: 100%; width: 100%; }
+.archive-items {
+  display: grid; grid-auto-flow: column; grid-auto-columns: calc(100% / 3);
+  // All six cards share the same image and copy rows, including offscreen cards.
+  grid-template-rows: minmax(5rem, 1fr) max-content;
+  height: 100%; width: 100%;
+}
 .archive-item {
-  flex: 0 0 calc(100% / 3);
   min-width: 0;
   min-height: 0;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-row: 1 / span 2;
+  grid-template-rows: subgrid;
   border-left: 1px solid var(--color-border);
   overflow-y: auto;
   scrollbar-width: thin;
 }
 .archive-image {
-  flex: 1 0 5rem;
   min-height: 5rem;
   position: relative;
   display: block;
@@ -83,7 +87,7 @@
   }
 }
 .archive-copy {
-  flex: 0 0 auto;
+  display: flex; flex-direction: column;
   padding: 1.25rem var(--archive-padding) var(--archive-padding);
   border-top: 1px solid var(--color-border);
   h3 { font-size: clamp(1.25rem, 1.7vw, 1.75rem); font-weight: 400; }
@@ -92,12 +96,13 @@
 .archive-record { margin-top: 1.5rem; font-size: var(--font-caption); color: var(--color-muted); }
 .archive-credit { max-width: 18rem; margin-block: .75rem 1.5rem; color: var(--color-muted); font-size: var(--font-hero-caption); }
 .archive-baseline {
+  margin-top: auto;
   display: flex; align-items: center; justify-content: space-between; gap: 1rem;
   font-size: var(--font-caption);
 }
 @media (min-width: 768px) and (max-width: 1099px) {
   .archive-scene { grid-template-columns: minmax(12rem, 28%) minmax(0, 1fr); }
-  .archive-item { flex-basis: 50%; }
+  .archive-items { grid-auto-columns: 50%; }
   .archive-intro h2 { font-size: 2rem; }
   .archive-controls { align-items: start; flex-direction: column; }
 }
@@ -124,7 +129,8 @@
   .archive-controls { gap: .25rem; flex-direction: row; align-items: center; }
   .archive-count { font-size: .6875rem; }
   .archive-viewport { border-top: 1px solid var(--color-border); }
-  .archive-item { flex-basis: 100%; border-left: 0; border-right: 1px solid var(--color-border); }
+  .archive-items { grid-auto-columns: 100%; }
+  .archive-item { border-left: 0; border-right: 1px solid var(--color-border); }
   .archive-copy { padding: .75rem 1rem; }
   .archive-record { margin-top: .75rem; font-size: .75rem; }
   .archive-credit { margin-block: .5rem .75rem; }
