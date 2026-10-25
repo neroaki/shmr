@@ -1,0 +1,84 @@
+// Source: Product Planning/tokens.json. Adaptations are recorded in docs/implementation.md.
+:root {
+  color-scheme: dark;
+  --color-background: #1c1c1c;
+  --color-text: #fdfaf2;
+  --color-muted: #bdbdbd;
+  --color-border: #595959;
+  --font-family: 'Pretendard', system-ui, sans-serif;
+  --font-body: 1rem;
+  --font-caption: .875rem;
+  --font-section: 2rem;
+  --font-title: 2.625rem;
+  --font-weight-body: 400;
+  --font-weight-title: 500;
+  --line-body: 1.65;
+  --line-heading: 1.3;
+  --letter-spacing: 0em;
+  --container-width: 100%;
+  --page-gutter: max(12px, .833333vw);
+  --grid-gutter: 1.66667vw;
+  --grid-columns: 24;
+  --section-padding: 6.25rem;
+  --scene-safety-gap: clamp(200px, 16svh, 300px);
+  --section-gap: 7.5rem;
+  --card-padding: 1.25rem;
+  --card-gap: 0px;
+  --heading-body-gap: 1rem;
+  --body-link-gap: 1.5rem;
+  --caption-gap: .6875rem;
+  --image-poster-ratio: 2 / 3;
+  --radius: 0px;
+  --header-height: 3.375rem;
+  --button-height: 44px;
+  // Main-page temporary adaptations for the approved centered hero.
+  --inner-gutter: clamp(1.25rem, 2.2vw, 3rem);
+  --hero-image-width: 28rem;
+  --hero-stage-padding: clamp(3rem, 6vh, 6rem);
+  --font-masthead-family: 'Instrument Serif', Georgia, serif;
+  --font-masthead: 10.12cqw;
+  --masthead-weight: 400;
+  --masthead-line-height: 1.08;
+  --masthead-letter-spacing: -.02em;
+  --font-hero-side: .75rem;
+  --hero-side-letter-spacing: .08em;
+  --font-hero-caption: .6875rem;
+  --font-display: clamp(2.625rem, 4.2vw, 4.5rem);
+  // Overview + overlapping collection sections, adapted from the reference.
+  --highlights-surface-alternate: #242424;
+  --highlights-overview-title: clamp(3.5rem, 8vw, 8rem);
+  --highlights-panel-title: clamp(2rem, 3.6vw, 4rem);
+  --highlights-copy-width: clamp(17rem, 25vw, 24rem);
+  --highlights-panel-padding: clamp(1.5rem, 3vw, 3rem);
+  --highlights-panel-gap: clamp(2rem, 4vw, 5rem);
+  // Scroll-led exhibition roll: open title rails and alternating posters.
+  --programme-title-size: clamp(3rem, 7vw, 7rem);
+  --programme-content-width: 51.25rem;
+  --programme-poster-width: 20rem;
+  --programme-entry-title: clamp(1.5rem, 2.2vw, 2rem);
+  --programme-entry-gap: clamp(7.5rem, 22svh, 15rem);
+  --programme-copy-gap: clamp(2rem, 4vw, 4rem);
+  --archive-padding: clamp(1.25rem, 1.7vw, 2rem);
+  --archive-item-title: clamp(1.25rem, 1.8vw, 2rem);
+  // Cwart-inspired framed panorama and directional information panels.
+  --about-frame: clamp(44px, 4.5vw, 64px);
+  --about-title-size: clamp(3rem, 6.7vw, 8rem);
+  --about-panel-duration: 900ms;
+  --about-panel-ease: cubic-bezier(.22, .75, .16, 1);
+  --header-z: 20;
+  --skip-link-z: 30;
+  --transition-duration: 160ms;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --page-gutter: 16px;
+    --grid-gutter: 16px;
+    --grid-columns: 4;
+    --section-padding: 3rem;
+    --section-gap: 3rem;
+    --font-title: 2rem;
+    --inner-gutter: 1rem;
+    --hero-stage-padding: 2rem;
+  }
+}
