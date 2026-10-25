@@ -1,6 +1,6 @@
 .hero {
   container-type: inline-size;
-  min-height: calc(100svh - var(--header-height) - var(--page-gutter) - 2px);
+  min-height: calc(100svh - var(--page-gutter) - 2px);
   display: flex; flex-direction: column;
 }
 .hero-stage {

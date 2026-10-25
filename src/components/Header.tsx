@@ -1,13 +1,49 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { navigation } from '../data/home'
 import { scrollPageToSection } from '../lib/page-scroll'
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [visible, setVisible] = useState(false)
+  const headerRef = useRef<HTMLElement>(null)
   const menuButton = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    const hero = document.querySelector<HTMLElement>('.hero')
+    const header = headerRef.current
+    if (!hero || !header) return
+    let frame = 0
+    let shown = false
+    const update = () => {
+      frame = 0
+      // A small dead band avoids flicker while reversing near the hero boundary.
+      const threshold = header.offsetHeight + (shown ? 56 : 24)
+      const next = hero.getBoundingClientRect().bottom <= threshold
+      if (next === shown) return
+      shown = next
+      setVisible(next)
+      if (!next) setMenuOpen(false)
+    }
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+    const observer = new ResizeObserver(schedule)
+    observer.observe(hero)
+    observer.observe(header)
+    window.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    schedule()
+    return () => {
+      cancelAnimationFrame(frame)
+      observer.disconnect()
+      window.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+    }
+  }, [])
+
   return (
-    <header className="site-header" onKeyDown={(event) => {
+    <header ref={headerRef} className={`site-header${visible ? ' is-visible' : ''}`} inert={!visible} aria-hidden={!visible} onKeyDown={(event) => {
       if (event.key === 'Escape' && menuOpen) {
         setMenuOpen(false)
         menuButton.current?.focus()

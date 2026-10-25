@@ -2,8 +2,11 @@
 .site-header {
   display: grid; grid-template-columns: 1fr 2fr; align-items: center;
   min-height: var(--header-height); padding: 0 var(--inner-gutter);
-  position: sticky; top: 0; z-index: var(--header-z);
+  position: fixed; top: 0; left: calc(var(--page-gutter) + 1px); right: calc(var(--page-gutter) + 1px); z-index: var(--header-z);
   background: var(--color-background); border-bottom: 1px solid var(--color-border);
+  opacity: 0; visibility: hidden; transform: translateY(-8px); pointer-events: none;
+  transition: opacity 280ms ease, transform 360ms cubic-bezier(.22, 1, .36, 1), visibility 280ms;
+  &.is-visible { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
 }
 .site-brand { font-size: 1.125rem; font-weight: 500; width: fit-content; padding-block: .75rem; }
 .site-nav {
