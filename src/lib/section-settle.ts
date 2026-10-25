@@ -36,17 +36,17 @@ export function installSectionSettle(controller: Lenis) {
         const start = section.getBoundingClientRect().top + scrollY - top
         const end = section.dataset.scrollEnd
         return end === undefined
-          ? [start, start + Math.max(0, section.offsetHeight - viewport)]
-          : [start, start + Number(end)]
+          ? [{ point: start, about: false }, { point: start + Math.max(0, section.offsetHeight - viewport), about: false }]
+          : [{ point: start, about: selector === '#about' }, { point: start + Number(end), about: selector === '#about' }]
       })
     const target = boundaries
-      .filter(point => (point - position) * direction > 1 && Math.abs(point - position) <= radius)
-      .sort((a, b) => Math.abs(a - position) - Math.abs(b - position))[0]
+      .filter(({ point }) => (point - position) * direction > 1 && Math.abs(point - position) <= radius)
+      .sort((a, b) => Math.abs(a.point - position) - Math.abs(b.point - position))[0]
     if (target === undefined) return
     settling = true
-    controller.scrollTo(target, {
-      duration: .32,
-      easing: t => 1 - (1 - t) ** 3,
+    controller.scrollTo(target.point, {
+      duration: target.about ? .48 : .32,
+      easing: target.about ? t => t * t * (3 - 2 * t) : t => 1 - (1 - t) ** 3,
       onComplete: () => { settling = false },
     })
   }

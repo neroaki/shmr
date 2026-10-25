@@ -8,8 +8,20 @@
 .site-brand { font-size: 1.125rem; font-weight: 500; width: fit-content; padding-block: .75rem; }
 .site-nav {
   display: flex; justify-content: space-between; gap: 1rem;
-  a { display: inline-flex; align-items: center; min-height: var(--button-height); font-size: var(--font-caption); }
-  sup { font-size: .625rem; margin-left: .2rem; align-self: center; transform: translateY(-.3em); color: var(--color-muted); }
+  a { display: inline-flex; align-items: center; min-height: var(--button-height); font-size: var(--font-caption); white-space: nowrap; }
+  a:hover { text-decoration: none; }
+  a:hover .site-nav-label::after, a:focus-visible .site-nav-label::after { transform: scaleX(1); }
+}
+.site-nav-label {
+  position: relative; display: inline-flex; align-items: baseline; line-height: 1.25;
+  &::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: -.22em;
+    border-bottom: 1px solid currentColor; transform: scaleX(0); transform-origin: left;
+    transition: transform var(--transition-duration) ease;
+  }
+}
+.site-nav-number {
+  margin-left: .2rem; font-size: .625rem; line-height: 1; color: var(--color-muted);
 }
 .menu-toggle { display: none; }
 .section { padding: var(--section-padding) var(--inner-gutter); border-top: 1px solid var(--color-border); }
@@ -29,6 +41,11 @@
 }
 .footer-name { margin-bottom: 1rem; font-size: 1.25rem; }
 .footer-bottom { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; font-size: var(--font-caption); color: var(--color-muted); }
+.footer-logo {
+  display: flex; justify-content: center;
+  margin-top: clamp(3rem, 6vw, 6rem);
+  img { display: block; width: clamp(12rem, 14vw, 19rem); height: auto; }
+}
 
 @media (max-width: 1023px) {
   .section-heading { grid-template-columns: 1fr 5fr; }

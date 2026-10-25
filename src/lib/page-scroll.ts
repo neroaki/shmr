@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Lenis from 'lenis'
+import { aboutWheelFactor } from './about-scroll'
 import { installSectionSettle } from './section-settle'
 import 'lenis/dist/lenis.css'
 
@@ -16,6 +17,24 @@ export function usePageScroll() {
       anchors: true,
       allowNestedScroll: true,
       respectReducedMotion: true,
+      virtualScroll: input => {
+        if (!(input.event instanceof WheelEvent) || input.event.ctrlKey || !input.deltaY
+          || Math.abs(input.deltaX) > Math.abs(input.deltaY)
+          || matchMedia('(prefers-reduced-motion: reduce)').matches) return true
+        if (input.event.composedPath().some(node => node instanceof HTMLElement
+          && node.matches('.about-panel-layout, .about-center')
+          && node.scrollHeight > node.clientHeight + 1
+          && /auto|scroll/.test(getComputedStyle(node).overflowY))) return true
+        const about = document.querySelector<HTMLElement>('#about')
+        const travel = Number(about?.dataset.scrollEnd)
+        if (!about || !travel) return true
+        const header = document.querySelector<HTMLElement>('.site-header')?.getBoundingClientRect().height ?? 0
+        const start = about.getBoundingClientRect().top + scrollY - header
+        const approach = Math.min(240, Math.max(120, (innerHeight - header) * .25))
+        const position = pageScroll?.targetScroll ?? scrollY
+        input.deltaY *= aboutWheelFactor(position, start, start + travel, approach)
+        return true
+      },
     })
     pageScroll = controller
     const settling = installSectionSettle(controller)

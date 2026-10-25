@@ -30,7 +30,7 @@ export function Header() {
             window.history.pushState(null, '', item.href)
             scrollPageToSection(section)
           }))
-        }}>{item.label}<sup aria-hidden="true">/{item.number}</sup></a>)}
+        }}><span className="site-nav-label">{item.label}<span className="site-nav-number" aria-hidden="true">/{item.number}</span></span></a>)}
       </nav>
     </header>
   )
