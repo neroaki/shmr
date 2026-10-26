@@ -4,12 +4,14 @@ import { ExhibitHighlights } from '../components/ExhibitHighlights'
 import { ExhibitionProgramme } from '../components/ExhibitionProgramme'
 import { CollectionArchive } from '../components/CollectionArchive'
 import { MuseumAbout } from '../components/MuseumAbout'
+import { useHeroPhoto } from '../hooks/useHeroPhoto'
 import './home.scss'
 
 export function Home() {
   const heroRef = useRef<HTMLElement>(null)
   const titleRef = useRef<HTMLHeadingElement>(null)
   const [mastheadRun, setMastheadRun] = useState(-1)
+  useHeroPhoto(heroRef)
 
   useEffect(() => {
     let active = true

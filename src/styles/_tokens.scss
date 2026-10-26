@@ -33,8 +33,8 @@
   --button-height: 44px;
   // Main-page temporary adaptations for the approved centered hero.
   --inner-gutter: clamp(1.25rem, 2.2vw, 3rem);
-  --hero-image-width: 28rem;
-  --hero-stage-padding: clamp(3rem, 6vh, 6rem);
+  --hero-image-width: clamp(28rem, min(42vw, calc((100svh - 11vw - 12rem) / .75125)), 60rem);
+  --hero-stage-padding: clamp(1.5rem, 3svh, 4rem);
   --font-masthead-family: 'Instrument Serif', Georgia, serif;
   --font-masthead: 10.12cqw;
   --masthead-weight: 400;

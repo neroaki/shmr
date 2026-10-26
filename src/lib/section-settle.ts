@@ -45,8 +45,8 @@ export function installSectionSettle(controller: Lenis) {
     if (target === undefined) return
     settling = true
     controller.scrollTo(target.point, {
-      duration: target.about ? .48 : .32,
-      easing: target.about ? t => t * t * (3 - 2 * t) : t => 1 - (1 - t) ** 3,
+      duration: target.about ? .62 : .48,
+      easing: t => t * t * (3 - 2 * t),
       onComplete: () => { settling = false },
     })
   }

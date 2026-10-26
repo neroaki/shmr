@@ -15,7 +15,11 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-padding-top: var(--header-height); }
+html {
+  scroll-padding-top: var(--header-height);
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
 body {
   margin: 0;
   padding: var(--page-gutter);

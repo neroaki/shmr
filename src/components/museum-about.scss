@@ -33,6 +33,13 @@
     text-shadow: 0 1px 10px rgb(0 0 0 / .45);
   }
 }
+.about-photo-window {
+  position: absolute; inset: 0; overflow: hidden;
+  img { transform: translate3d(var(--photo-x, 0px), var(--photo-y, 0px), 0) scale(1.045); }
+}
+@media (prefers-reduced-motion: reduce), (hover: none) {
+  .about-photo-window img { transform: none; }
+}
 .about-title-highlight {
   padding-inline: .05em;
   background: var(--color-text); color: var(--color-background); text-shadow: none;

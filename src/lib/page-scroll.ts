@@ -11,7 +11,7 @@ export function usePageScroll() {
   useEffect(() => {
     const controller = new Lenis({
       autoRaf: true,
-      lerp: 0.12,
+      lerp: 0.095,
       smoothWheel: true,
       syncTouch: false,
       anchors: true,

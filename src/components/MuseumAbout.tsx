@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { museumServices } from '../data/home'
 import { useAboutScene } from '../hooks/useAboutScene'
+import { usePhotoDepth } from '../hooks/usePhotoDepth'
 import { scrollPageToSection } from '../lib/page-scroll'
 import './museum-about.scss'
 
@@ -12,6 +13,7 @@ const services = museumServices.slice(1)
 export function MuseumAbout() {
   const { section, scene } = useAboutScene()
   const [active, setActive] = useState<number | null>(null)
+  const mediaRef = usePhotoDepth(active !== null)
   const triggers = useRef<(HTMLButtonElement | null)[]>([])
   const panels = useRef<(HTMLElement | null)[]>([])
   useEffect(() => {
@@ -29,8 +31,10 @@ export function MuseumAbout() {
       }}>
         <div className="about-center" inert={active !== null} aria-hidden={active !== null}>
           <figure className="about-panorama">
-            <div className="about-panorama-media">
-              <img src={museum.image} alt={museum.alt} width="1200" height="420" loading="lazy" decoding="async" />
+            <div className="about-panorama-media" ref={mediaRef}>
+              <div className="about-photo-window">
+                <img src={museum.image} alt={museum.alt} width="1200" height="420" loading="lazy" decoding="async" draggable={false} />
+              </div>
               <h2 id="about-title"><span className="about-title-highlight">박물관</span><span>소개</span></h2>
               <div className="about-photo-introduction">
                 <div className="about-intro-label"><span>서울의 도시역사박물관</span><span aria-hidden="true">04</span></div>
