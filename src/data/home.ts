@@ -1,14 +1,14 @@
 import exterior from '../assets/images/museum-exterior.webp'
 import educationPoster from '../assets/images/about-education.webp'
 import eventPoster from '../assets/images/about-event.webp'
-import panorama from '../assets/images/seoul-panorama-1925.webp'
+import street from '../assets/images/gyeongseong-street.webp'
 import urbanPoster from '../assets/images/seoul-urban-planning-2026.jpg'
 import defensePoster from '../assets/images/yeomin-gongsu-2026.jpg'
 import taehwagwanPoster from '../assets/images/taehwagwan-2026.jpg'
 import postcard from '../assets/images/joseon-postcard-000030.webp'
 import archiveMap from '../assets/images/archive-map.webp'
 import archivePhoto from '../assets/images/archive-photo.webp'
-import archiveCity from '../assets/images/archive-city.webp'
+import archiveCity from '../assets/images/archive-city-dongjak.jpg'
 import archiveExcavation from '../assets/images/archive-excavation.webp'
 import archiveLife from '../assets/images/archive-life.webp'
 import cityMap from '../assets/images/doseong-daegido.jpg'
@@ -33,18 +33,17 @@ export const official = {
 // Main-only iteration: section links are replaced by routes in a later stage.
 export const navigation = [
   { label: '주요 전시품', href: '#featured', number: '01' },
-  { label: '기획전시', href: '#exhibitions', number: '02' },
+  { label: '기획전시·프로그램', href: '#exhibitions', number: '02' },
   { label: '소장자료', href: '#collection', number: '03' },
   { label: '박물관 소개', href: '#about', number: '04' },
 ]
 
 // Replace the image, dimensions, description and source together.
 export const hero = {
-  image: panorama, width: 1600, height: 1202,
-  alt: '남산에서 내려다본 1925년 경성 시가지와 산 능선',
-  title: '경성 전경', year: '1925',
-  credit: '서울역사박물관 소장 · 공공누리 제1유형',
-  source: `${museum}/archive/archiveNew/NR_archiveView.do?ctgryId=CTGRY812&upperNodeId=CTGRY812&type=D&fileSn=300&fileId=H-TRNS-75528-812`,
+  image: street, width: 3313, height: 2104,
+  alt: 'A sepia photograph of Gyeongseong showing a tram, pedestrians and buildings along a broad street',
+  title: 'Gyeongseong street scene',
+  // User-supplied photograph: do not inherit the former panorama's 1925 date or source.
 }
 
 export const exhibitions = [
@@ -78,7 +77,7 @@ export const highlights = [
     id: 'doseong-map', number: '01', title: '도성대지도',
     category: '18세기 · 지도',
     description: '산과 성곽, 궁궐과 길이 한 화면에 담겨 있습니다. 오늘날에도 익숙한 장소를 옛 한양의 지도에서 찾아보세요.',
-    image: cityMap, width: 740, height: 711, displayWidth: 740,
+    image: cityMap, tone: 'paper', width: 740, height: 711, displayWidth: 740,
     alt: '산세와 도성 안팎의 길, 궁궐을 그린 도성대지도 전체 모습',
     source: `${museum}/www/board/NR_boardView.do?bbsCd=1182&seq=20221208151226671&sso=ok`,
   },
@@ -86,7 +85,7 @@ export const highlights = [
     id: 'seoyu-gyeonmun', number: '02', title: '서유견문',
     category: '개항기 · 서적',
     description: '유길준이 서양에서 접한 문물과 제도를 기록한 책입니다. 교육과 교통, 의료 등 새로운 사회를 구상하던 당시의 생각을 읽을 수 있습니다.',
-    image: seoyu, width: 740, height: 555, displayWidth: 740,
+    image: seoyu, tone: 'paper', width: 740, height: 555, displayWidth: 740,
     alt: '서문과 손글씨가 보이는 펼쳐진 서유견문',
     source: `${museum}/www/board/NR_boardView.do?bbsCd=1182&seq=20221212103738699&sso=ok`,
   },
@@ -94,7 +93,7 @@ export const highlights = [
     id: 'tram-381', number: '03', title: '전차 381호',
     category: '1930–1968년 운행 · 야외전시',
     description: '서울 거리를 실제로 달리던 전차입니다. 버스와 자동차가 거리를 채우기 전 서울의 이동 풍경을 보여줍니다.',
-    image: tram, width: 1600, height: 1067, displayWidth: 1200,
+    image: tram, tone: 'photo', width: 1600, height: 1067, displayWidth: 1200,
     alt: '박물관 야외에 전시된 크림색과 초록색 차체의 전차 381호',
     source: `${museum}/www/board/NR_boardView.do?bbsCd=1126&seq=20140421080000069&sso=ok`,
   },
@@ -102,7 +101,7 @@ export const highlights = [
     id: 'tram-guide', number: '04', title: '경성전차안내',
     category: '일제강점기 · 관광안내서',
     description: '전차와 버스 노선, 명소를 담은 접이식 안내서입니다. 당시의 도시 풍경과 함께 관광을 통해 식민 지배를 정당화하려던 시선도 담겨 있습니다.',
-    image: tramGuide, width: 740, height: 555, displayWidth: 740,
+    image: tramGuide, tone: 'paper', width: 740, height: 555, displayWidth: 740,
     alt: '경성의 전차 노선과 명소를 그림으로 나타낸 가로형 접이식 안내서',
     source: `${museum}/www/board/NR_boardView.do?bbsCd=1182&seq=20221212133847472&sso=ok`,
   },
@@ -110,7 +109,7 @@ export const highlights = [
     id: 'samho-apartment', number: '05', title: '서초삼호아파트',
     category: '1980년대 생활 · 재현 전시',
     description: '한 가족이 살던 집의 내장재와 기증 가구를 바탕으로 꾸린 공간입니다. 거실과 생활용품에서 당시의 아파트 생활을 살펴봅니다.',
-    image: apartment, width: 740, height: 555, displayWidth: 740,
+    image: apartment, tone: 'photo', width: 740, height: 555, displayWidth: 740,
     alt: '소파, 텔레비전, 거실장과 생활용품을 배치한 서초삼호아파트 재현 전시',
     source: `${museum}/www/board/NR_boardView.do?bbsCd=1182&seq=20221212151530130&sso=ok`,
   },
@@ -118,7 +117,7 @@ export const highlights = [
     id: 'olympic-torch', number: '06', title: '서울올림픽 성화봉',
     category: '1988 서울올림픽 · 성화봉',
     description: '1988년 서울올림픽을 상징하는 성화봉입니다. 올림픽을 준비하며 크게 달라진 서울의 모습과 도시가 세계에 알려진 순간을 돌아봅니다.',
-    image: olympicTorch, width: 740, height: 578, displayWidth: 740,
+    image: olympicTorch, tone: 'object', width: 740, height: 578, displayWidth: 740,
     alt: '서울올림픽 엠블럼과 오륜이 새겨진 금속 성화봉',
     source: `${museum}/www/board/NR_boardView.do?bbsCd=1182&seq=20221212151650918&sso=ok`,
   },
@@ -126,42 +125,42 @@ export const highlights = [
 
 // Six representative records introduce the archive's breadth, not its complete holdings.
 export const collections = [{
-  number: '01', image: postcard, width: 1200, height: 760,
+  number: '01', image: postcard, tone: 'paper', frame: 'document', width: 1200, height: 760,
   alt: '다듬이질하는 여성들이 담긴 조선풍속 엽서',
   title: '소장유물', description: '조선풍속 엽서 — 다듬이질',
   period: '일제강점기', record: '우리소리박물관000030',
   credit: '서울역사박물관 제공 · 서울우리소리박물관 소장 · 공공누리 제2유형',
   source: `${museum}/archive/archiveNew/NR_relicView.do?mcsjgbnc=PS01003026018&mcseqno1=000030&mcseqno2=00000&cdLanguage=KOR`,
 }, {
-  number: '02', image: archiveMap, width: 1200, height: 900,
+  number: '02', image: archiveMap, tone: 'paper', frame: 'map', width: 1200, height: 900,
   alt: '한성부 영역의 산과 하천, 지명을 표시한 경성부근지도',
   title: '서울지도', description: '경성부근지도',
   period: '1900년 · 고지도', record: 'srd-415205',
   credit: '서울역사박물관 제공 · 공공누리 제1유형',
   source: `${museum}/archive/archiveNew/NR_archiveView.do?ctgryId=CTGRY780&upperNodeId=CTGRY780&fileSn=1098&fileId=6279af91-be6d-4ddf-b8d1-30acd687347d&type=C`,
 }, {
-  number: '03', image: archivePhoto, width: 1200, height: 901,
+  number: '03', image: archivePhoto, tone: 'photo', frame: 'photo', width: 1200, height: 901,
   alt: '동대문에서 종로 안쪽으로 이어지는 전차 선로와 시가지',
   title: '근현대서울사진', description: '동대문 문루에서 바라본 종로',
   period: '1911년 · 종로', record: 'H-TRNS-74779-804',
   credit: '서울역사박물관 제공 · 공공누리 제1유형',
   source: `${museum}/archive/archiveNew/NR_archiveView.do?ctgryId=CTGRY804&upperNodeId=CTGRY804&fileSn=300&fileId=H-TRNS-74779-804&type=D`,
 }, {
-  number: '04', image: archiveCity, width: 296, height: 222,
-  alt: '거리에서 돌을 고르고 도로 포장 공사에 참여하는 시민들',
-  title: '서울시정사진', description: '시민들이 참여한 도로 포장 공사모습',
-  period: '1961년 4월 8일', record: 'H-TRNS-2328-724',
+  number: '04', image: archiveCity, tone: 'photo', frame: 'photo', width: 1981, height: 2000,
+  alt: '이촌동에서 바라본 개통 후 동작대교와 주변 한강종합개발 공사 현장',
+  title: '서울시정사진', description: '개통 후 동작대교',
+  period: '1984년 11월 26일', record: 'H-TRNS-101625-775',
   credit: '서울역사박물관 제공 · 공공누리 제1유형',
-  source: `${museum}/archive/archiveNew/NR_archiveView.do?ctgryId=CTGRY724&upperNodeId=CTGRY724&fileSn=300&fileId=H-TRNS-2328-724&type=B`,
+  source: `${museum}/archive/archiveNew/NR_archiveView.do?ctgryId=CTGRY772&upperNodeId=CTGRY775&fileSn=300&fileId=H-TRNS-101625-775&type=B`,
 }, {
-  number: '05', image: archiveExcavation, width: 1200, height: 800,
+  number: '05', image: archiveExcavation, tone: 'photo', frame: 'photo', width: 1200, height: 800,
   alt: '건물 터와 우물지가 드러난 의정부지 발굴 현장을 위에서 본 사진',
   title: '서울발굴기록', description: '의정부지 — 2019년 조사 후',
   period: '2019년 · 발굴 현장', record: 'H-TRNS-103913-919',
   credit: '서울역사박물관 제공 · 공공누리 제1유형',
   source: `${museum}/archive/archiveNew/NR_archiveView.do?ctgryId=CTGRY919&upperNodeId=CTGRY919&fileSn=400&fileId=H-TRNS-103913-919&type=E`,
 }, {
-  number: '06', image: archiveLife, width: 1059, height: 1200,
+  number: '06', image: archiveLife, tone: 'paper', frame: 'document', width: 1059, height: 1200,
   alt: '안채와 사랑채 등 가회동 30-2번지 가옥의 공간 배치를 추정한 도면',
   title: '서울생활문화자료조사', description: '1930년대 이후 가회동 30-2번지 가옥 추정 도면',
   period: '2018년 조사자료 · 북촌', record: 'H-TRNS-99845-301',

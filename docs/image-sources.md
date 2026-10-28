@@ -1,8 +1,8 @@
 # 이미지 출처
 
-확인·확보: 2026-10-23 / 주요 전시품 추가: 2026-10-25. 모든 사용 이미지는 서울역사박물관 공식 사이트에서 확보. 생성 이미지·스톡 이미지 없음.
+확인·확보: 2026-10-23 / 주요 전시품 추가: 2026-10-25. 공식 사이트 확보 이미지와 사용자가 제공한 이미지 사용. 개별 출처는 아래 기록 참조. 생성 이미지·스톡 이미지 없음.
 
-## 히어로 — 경성 전경
+## 이전 히어로 — 경성 전경 (교체 전 기록)
 
 - 파일: `src/assets/images/seoul-panorama-1925.webp` (1600×1202, 약 518KiB)
 - 원본: 3165×2378 JPG. [원본 이미지](https://museum.seoul.go.kr:8088/ARCHIVE_DATA/master/1011/A000000247/ff79bd6c-4f9e-45b8-8ca8-6f59ca2991eb.jpg)
@@ -13,6 +13,19 @@
 - alt: 남산에서 내려다본 1925년 경성 시가지와 산 능선.
 - 선택 이유: 도시 전체를 담은 기록사진으로 확정 카피와 연결되며, 중앙의 제한된 크기에서도 풍경이 읽힘. 현재 배치용 선택이며 최종 사진 확정 아님.
 - 처리: 전체 비율을 유지한 축소·WebP 변환. 자르기·색보정·합성·AI 보정 없음. 데스크톱 표시 최대 448px.
+
+### 2026-10-27 히어로 교체 검토용 사용자 제공 사진
+
+현재 사용 파일·캡션은 위의 1925년 ‘경성 전경’ 그대로다. 아래 두 사진은 **후보 자료**로만 기록하며 앱 이미지 폴더에 복사하거나 화면에 적용하지 않았다.
+
+| 제공 파일 | 확인한 크기 | 시각적 특성 | 검토 용도 |
+|---|---:|---|---|
+| `/Users/nero/Desktop/경성시가.jpg` | 3313×2104px | 따뜻한 세피아, 질감이 드러나는 하늘 | 톤 정리·얕은 깊이감·히어로 확장 후보 |
+| `/Users/nero/Desktop/경성시가 (1).jpg` | 2175×1448px | 차가운 흑백에 가까운 동일 구도 | 원본 분위기와 색상 비교 |
+
+- 파일명과 시각적 유사성만으로 촬영 연도·정확한 자료명·원본 출처를 확정하지 않는다. 후보 채택 전에 공식 기록과 대조하고 화면의 표제·연도·출처·alt를 함께 갱신한다.
+- 세피아의 노란 기운과 암부를 약하게 정리하는 시안을 우선한다. 역사적 원색을 새로 입히는 컬러라이징은 별도 시안이며 ‘복원’으로 표기하지 않는다. 두 제공 파일과 현재 사용 원본은 그대로 남긴다.
+- 이미지 분리/시차 적용 시 3313×2104px은 확대와 경계 마스킹에 여유를 주지만 피사체 뒤의 미촬영 배경까지 제공하지 않는다. 전차·사람·전선의 큰 분리 이동은 가림 영역을 보완한 뒤에만 결정한다.
 
 ## 전시 포스터 2점
 
@@ -147,3 +160,39 @@
 - 파일: `src/assets/images/museum-official-logo.jpg` (964×401)
 - 원본: [박물관 로고 공식 페이지](https://museum.seoul.go.kr/www/intro/introLogo.jsp?sso=ok)에서 제공하는 [시그니처 국영문 상하조합(기본) 다운로드](https://museum.seoul.go.kr/www/down/file/introLogo_3_1.zip) 안의 JPG
 - 적용: 푸터 하단 문구와 같은 행의 중앙에 배치하고 밑변을 정렬. 원본 비율과 색을 유지하며 CSS에서만 축소 표시.
+
+## 2026-10-27 소장자료 04 해상도 보완 및 표시 톤
+
+- 적용 파일: `src/assets/images/archive-city-dongjak.jpg` / 원본 4065×4103 → 1981×2000 JPEG, 비율 유지 축소. 이전 296×222 `archive-city.webp`는 삭제하지 않음.
+- 표제: 개통 후 동작대교 / 촬영일: 1984-11-26 / 자료군: 서울시정사진 / 기록 ID: H-TRNS-101625-775.
+- 공식 설명: 이촌동에서 동작동 방향으로 촬영한 개통 후 동작대교와 주변 한강종합개발 공사 현장. 원문 표제를 유지하고 촬영 방향을 alt에 반영.
+- [공식 기록](https://museum.seoul.go.kr/archive/archiveNew/NR_archiveView.do?ctgryId=CTGRY772&upperNodeId=CTGRY775&fileSn=300&fileId=H-TRNS-101625-775&type=B)
+- [공식 원본](https://museum.seoul.go.kr:8088/ARCHIVE_DATA/master/1011/A000000337/4ebdfcd3-de4b-49d5-8b3f-debf56f6660b.jpg)
+- 공식 원본 다운로드 엔드포인트에서 직접 확보. 기존 도로공사 사진과 같은 분류이며, 표시 해상도 차이를 해결하기 위해 교체. 화면 제공처 표기는 공식 페이지의 제1유형을 유지.
+- 기존 이미지 파일은 그대로 유지하고 `src/styles/_image-tone.scss`에서만 밝기·대비·채도 표시 조정. 포스터·로고 제외. 원본 톤 복원은 `src/data/presentation.ts`의 `defaultImageTone = 'original'`. 소장자료 4:3 프레임과 이미지별 배율은 톤 보정과 독립적.
+
+
+## 2026-10-28 행사·교육 추가 후보 포스터
+
+공식 메인의 행사·교육 목록 및 상세 안내 대조. 원본 파일 5점 확보. 화면 적용 전 후보 자료이며 자세한 사실 검증은 [수집 문서](./programme-content-research.md) 참조.
+
+| 파일 | 크기 | 원본 | 용도 |
+|---|---|---|---|
+| `src/assets/images/programme-white-bird-2026.png` | 521×745 | [공식 원본](https://museum.seoul.go.kr/upload/bbs/2026/10/13/5f2225fc-9ff0-45c1-aea4-f3b3ae059d05.png) | 배리어프리영화관 — 화이트 버드 · 02 섹션 확장 후보 |
+| `src/assets/images/programme-our-sound-talk-2026.jpg` | 1199×1499 | [공식 원본](https://museum.seoul.go.kr/upload/bbs/2026/10/20/5ce59afd-147f-4a79-acec-6e6fa0e4a630.jpg) | 소리, 내것이 되는 순간 · 02 섹션 확장 후보 |
+| `src/assets/images/programme-family-gyeonghuigung-2026.jpg` | 1440×1800 | [공식 원본](https://museum.seoul.go.kr/upload/bbs/2026/8/6/6d305c8f-b127-4a2c-8c55-f971b7196f6a.JPG) | 우리 가족 경희궁 탐험대 · 02 섹션 확장 후보 |
+| `src/assets/images/programme-visit-museum-2026.png` | 1080×2000 | [공식 원본](https://museum.seoul.go.kr/upload/bbs/2026/3/10/c87b4f49-7dc9-45a3-85cf-35a255d666f3.png) | Visit Museum, Enjoy Seoul · 02 섹션 확장 후보 |
+| `src/assets/images/programme-haegeum-2026.png` | 1080×1350 | [공식 원본](https://museum.seoul.go.kr/upload/bbs/2026/10/26/483b1980-8d1f-40a3-a208-33099bd7f14b.png) | 꿈나무 해금교실 : 나도 연주자! · 예비 |
+
+## 2026-10-28 소장자료 12점 교체
+
+제공된 WebP 12개를 `src/assets/images/collection/`에 영문 파일명으로 복사했다. 원본은 수정하지 않았으며 배포 경로는 Vite 정적 import로 처리한다. 파일별 원본명·공식 아카이브 상세 URL·적용 위치는 [소장자료 출처 기록](collection-content-research.md) 참조.
+
+## 2026-10-28 히어로 — 경성 시가
+
+- 입력: 사용자가 제공한 `/Users/nero/Desktop/경성시가.jpg` (3313×2104).
+- 적용 파일: `src/assets/images/gyeongseong-street.webp` / 3313×2104 / 1,664,816 bytes. Vite 정적 import를 통해 개발·빌드 경로 자동 처리.
+- 처리: 원래 해상도를 유지한 WebP 변환(quality 91). 색보정·생성·레이어 분리 없음. 화면 전체 인트로에서는 cover, 정착 후 원본 비율 전체 표시.
+- 적용: 히어로 전체 화면 인트로 및 중앙 상단 정착 이미지. 기존 `seoul-panorama-1925.webp`는 복원용으로 보존.
+- 새 사진의 촬영 연도와 개별 공식 기록은 미확정. 기존 파노라마의 1925년·기록 URL을 이 사진에 승계하지 않음. 아카이브 링크는 개별 출처가 아닌 탐색 링크로 표시.
+- 영문 설명은 화면에서 확인되는 전차·보행자·건물과 감상 문구로 구성. 표제는 Gyeongseong street scene.

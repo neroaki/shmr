@@ -1,0 +1,9 @@
+// Display-only correction; the source image files remain intact.
+[data-image-tone='balanced'] {
+  --image-tone-photo: saturate(.82) contrast(.97) brightness(.99);
+  --image-tone-paper: saturate(.9) contrast(.98);
+  --image-tone-object: saturate(.88) contrast(.98);
+}
+.image-tone--photo { filter: var(--image-tone-photo, none); }
+.image-tone--paper { filter: var(--image-tone-paper, none); }
+.image-tone--object { filter: var(--image-tone-object, none); }

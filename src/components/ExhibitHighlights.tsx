@@ -134,7 +134,7 @@ export function ExhibitHighlights() {
                 <button type="button" ref={previousRef} aria-label="이전 전시품" onClick={() => moveRef.current(-1)}>←</button>
                 <button type="button" ref={nextRef} aria-label="다음 전시품" onClick={() => moveRef.current(1)}>→</button>
               </div>
-              <a className="highlights-skip" href="#exhibitions">기획전시로 이동 <span aria-hidden="true">↓</span></a>
+              <a className="highlights-skip" href="#exhibitions">기획전시·프로그램으로 이동 <span aria-hidden="true">↓</span></a>
             </div>
           </div>
           <div className="highlights-stage" ref={stageRef}>
@@ -147,7 +147,7 @@ export function ExhibitHighlights() {
                 <div className="highlights-overview-copy">
                   <p>지도와 책, 거리와 집에서<br />서울의 변화를 살펴보세요</p>
                   <p>한양의 지도를 시작으로 새로운 문물을 담은 책과 교통, 주거와 올림픽의 기록까지 여섯 점을 소개합니다</p>
-                  <a className="text-link" href="#exhibitions">기획전시로 이동 <span aria-hidden="true">↓</span></a>
+                  <a className="text-link" href="#exhibitions">기획전시·프로그램으로 이동 <span aria-hidden="true">↓</span></a>
                 </div>
                 <ol className="highlights-index" aria-label="주요 전시품 목록">
                   {highlights.map((item, index) => (
@@ -176,7 +176,7 @@ export function ExhibitHighlights() {
                 </header>
                 <div className="exhibit-panel-body">
                   <div className="exhibit-panel-image">
-                    <img src={item.image} alt={item.alt} width={item.width} height={item.height} loading="lazy" decoding="async" />
+                    <img className={`image-tone--${item.tone}`} src={item.image} alt={item.alt} width={item.width} height={item.height} loading="lazy" decoding="async" />
                   </div>
                   <div className="exhibit-panel-copy">
                     <p className="eyebrow">{item.category}</p>

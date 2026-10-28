@@ -54,6 +54,24 @@ export function scrollPageTo(top: number, immediate = false) {
   else window.scrollTo({ top, behavior: 'instant' })
 }
 
+// Pause inertial scrolling and boundary settling while a modal detail is open.
+export function lockPageScroll() {
+  cancelSettle?.()
+  const controller = pageScroll
+  const wasStopped = controller?.isStopped
+  controller?.stop()
+  const position = window.scrollY
+  const previousOverflow = document.documentElement.style.overflow
+  document.documentElement.style.overflow = 'hidden'
+  return () => {
+    document.documentElement.style.overflow = previousOverflow
+    if (pageScroll === controller && controller) {
+      controller.scrollTo(position, { immediate: true, force: true })
+      if (!wasStopped) controller.start()
+    } else window.scrollTo({ top: position, behavior: 'instant' })
+  }
+}
+
 export function scrollPageToSection(section: HTMLElement) {
   const headerHeight = document.querySelector<HTMLElement>('.site-header')?.getBoundingClientRect().height ?? 0
   const top = section.getBoundingClientRect().top + window.scrollY - headerHeight

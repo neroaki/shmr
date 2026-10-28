@@ -2,7 +2,7 @@
 .highlights-overview {
   display: flex; flex-direction: column; justify-content: space-between;
   min-height: 0;
-  padding: clamp(2rem, 4vw, 4rem) var(--highlights-panel-padding);
+  padding: var(--section-heading-inset) var(--highlights-panel-padding) var(--highlights-panel-padding);
   gap: clamp(1rem, 3vh, 2.5rem);
 }
 .highlights-overview-heading {
@@ -13,7 +13,7 @@
 .highlights-overview-body { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(3rem, 8vw, 8rem); align-items: end; }
 .highlights-overview-copy {
   max-width: 31rem;
-  > p:first-child { font-size: clamp(1.5rem, 2.2vw, 2rem); line-height: 1.45; }
+  > p:first-child { font-size: clamp(1.25rem, 1.8vw, 1.625rem); line-height: 1.45; }
   > p + p { margin-top: 2rem; max-width: 29em; color: var(--color-muted); font-size: var(--font-caption); }
   > a { margin-top: 2rem; font-size: var(--font-caption); }
 }
@@ -66,7 +66,7 @@
 .exhibit-panel {
   display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 1.5rem;
   min-height: 0;
-  padding: var(--highlights-panel-padding);
+  padding: var(--section-heading-inset) var(--highlights-panel-padding) var(--highlights-panel-padding);
   background: var(--color-background); border-bottom: 1px solid var(--color-border);
 }
 .exhibit-panel-heading {
@@ -126,7 +126,7 @@
 }
 @media (max-height: 750px) and (min-width: 768px) {
   .highlights-overview { padding-block: 1.5rem; }
-  .highlights-overview-heading h2 { font-size: clamp(3rem, 6vw, 5rem); }
+  .highlights-overview-heading h2 { font-size: var(--section-title-size); }
   .highlights-overview-copy > p:first-child { font-size: 1.5rem; }
   .exhibit-panel { padding-block: 1.25rem; gap: 1rem; }
   .exhibit-panel-heading h3 { font-size: 2rem; }
@@ -142,6 +142,6 @@
 }
 @media (max-height: 600px) and (min-width: 768px) {
   .highlights-overview { padding-block: 1rem; gap: .75rem; }
-  .highlights-overview-heading h2 { font-size: 3rem; }
+  .highlights-overview-heading h2 { font-size: var(--section-title-size); }
   .highlights-overview-copy > p + p, .highlights-overview-copy > a { margin-top: 1rem; }
 }

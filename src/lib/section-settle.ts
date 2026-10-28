@@ -18,7 +18,7 @@ export function installSectionSettle(controller: Lenis) {
     }
   }
   const settle = () => {
-    if (!armed || reduced.matches || document.hidden) return
+    if (!armed || controller.isStopped || reduced.matches || document.hidden) return
     if (Math.abs(controller.velocity) > .2 || Math.abs(controller.targetScroll - controller.animatedScroll) > 1) {
       timer = window.setTimeout(settle, 80)
       return
@@ -56,7 +56,7 @@ export function installSectionSettle(controller: Lenis) {
   }
   const wheel = (event: WheelEvent) => {
     cancel()
-    if (event.ctrlKey || reduced.matches || Math.abs(event.deltaX) > Math.abs(event.deltaY) || !event.deltaY) return
+    if (controller.isStopped || event.ctrlKey || reduced.matches || Math.abs(event.deltaX) > Math.abs(event.deltaY) || !event.deltaY) return
     // Leave scrollable descriptions and open information panels to native scrolling.
     if (event.composedPath().some(node => node instanceof HTMLElement
       && node !== document.body && node !== document.documentElement
@@ -68,6 +68,7 @@ export function installSectionSettle(controller: Lenis) {
   }
   const key = (event: KeyboardEvent) => {
     cancel()
+    if (controller.isStopped) return
     if (event.target instanceof HTMLElement && event.target.closest('input, textarea, select, [contenteditable="true"], button, a')) return
     if (!['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' '].includes(event.key)) return
     direction = ['ArrowUp', 'PageUp'].includes(event.key) || (event.key === ' ' && event.shiftKey) ? -1 : 1

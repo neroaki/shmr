@@ -33,7 +33,7 @@ export function MuseumAbout() {
           <figure className="about-panorama">
             <div className="about-panorama-media" ref={mediaRef}>
               <div className="about-photo-window">
-                <img src={museum.image} alt={museum.alt} width="1200" height="420" loading="lazy" decoding="async" draggable={false} />
+                <img className="image-tone--photo" src={museum.image} alt={museum.alt} width="1200" height="420" loading="lazy" decoding="async" draggable={false} />
               </div>
               <h2 id="about-title"><span className="about-title-highlight">박물관</span><span>소개</span></h2>
               <div className="about-photo-introduction">
