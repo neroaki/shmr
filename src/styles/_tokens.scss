@@ -5,13 +5,16 @@
   --color-text: #fdfaf2;
   --color-muted: #bdbdbd;
   --color-border: #595959;
-  --font-family: 'Pretendard', system-ui, sans-serif;
+  --color-surface: #232323;
+  --color-overlay: #1c1c1ce8;
+  --color-caption-shade: #161616db;
+  --font-family: 'SUITE', system-ui, sans-serif;
   --font-body: 1rem;
   --font-caption: .875rem;
   --font-section: 2rem;
   --font-title: 2.625rem;
-  --font-weight-body: 400;
-  --font-weight-title: 500;
+  --font-weight-body: 300;
+  --font-weight-title: 300;
   --line-body: 1.65;
   --line-heading: 1.3;
   --letter-spacing: 0em;
@@ -20,7 +23,7 @@
   --grid-gutter: 1.66667vw;
   --grid-columns: 24;
   --section-padding: 6.25rem;
-  --scene-safety-gap: clamp(200px, 16svh, 300px);
+  --scene-safety-gap: 50vh;
   --section-gap: 7.5rem;
   --card-padding: 1.25rem;
   --card-gap: 0px;
@@ -35,9 +38,9 @@
   --inner-gutter: clamp(1.25rem, 2.2vw, 3rem);
   --hero-image-width: 28rem;
   --hero-stage-padding: clamp(3rem, 6svh, 6rem);
-  --font-masthead-family: 'Instrument Serif', Georgia, serif;
+  --font-masthead-family: 'SUITE', system-ui, sans-serif;
   --font-masthead: 10.12cqw;
-  --masthead-weight: 400;
+  --masthead-weight: 300;
   --masthead-line-height: 1.08;
   --masthead-letter-spacing: -.02em;
   --font-hero-side: .75rem;
@@ -67,7 +70,7 @@
   --archive-image-surface: #aaa8a3;
   // Cwart-inspired framed panorama and directional information panels.
   --about-frame: clamp(44px, 4.5vw, 64px);
-  --about-title-size: var(--section-title-size);
+  --about-title-size: clamp(2rem, 3.15vw, 3.375rem);
   --about-panel-duration: 900ms;
   --about-panel-ease: cubic-bezier(.22, .75, .16, 1);
   --header-z: 20;
@@ -86,4 +89,18 @@
     --inner-gutter: 1rem;
     --hero-stage-padding: 2rem;
   }
+}
+
+// Warm paper surfaces retain the museum's restrained palette in light mode.
+:root[data-theme='light'] {
+  color-scheme: only light;
+  --color-background: #f5f2eb;
+  --color-text: #242321;
+  --color-muted: #66635e;
+  --color-border: #b3aea5;
+  --color-surface: #eae6df;
+  --color-overlay: #f5f2ebed;
+  --color-caption-shade: #f5f2ebed;
+  --highlights-surface-alternate: #ece8e1;
+  --archive-image-surface: #e4dfd6;
 }

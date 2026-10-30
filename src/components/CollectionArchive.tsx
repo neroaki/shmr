@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
+import { useLanguage } from '../i18n/LanguageContext'
+import { useEffect, useRef, useState, type PointerEvent } from 'react'
 import { archiveObjects } from '../data/archive-objects'
 import { official } from '../data/home'
+import { isCollectionAligned, useCollectionEntrance } from '../hooks/useCollectionEntrance'
 import { CollectionCard } from './collection/CollectionCard'
 import './collection-archive.scss'
 
@@ -19,12 +21,9 @@ const collectionSlots = [
 ].map(slot => ({ ...slot, item: archiveObjects.find(item => item.id === slot.id)! }))
 
 export function CollectionArchive() {
+  const { t } = useLanguage()
   const sceneRef = useRef<HTMLDivElement>(null)
-  const [phase, setPhase] = useState<'intro' | 'docking' | 'revealing' | 'ready'>('intro')
-  const docked = phase !== 'intro'
-  const revealing = phase === 'revealing' || phase === 'ready'
-  const ready = phase === 'ready'
-  const [revealRanks, setRevealRanks] = useState(() => collectionSlots.map((_, index) => index))
+  useCollectionEntrance(sceneRef)
   const [preview, setPreview] = useState<number | null>(null)
   const [selected, setSelected] = useState<number | null>(null)
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -40,13 +39,16 @@ export function CollectionArchive() {
     setPreview(null)
   }
   function open(index: number) {
-    if (opened.current || !ready) return
+    if (opened.current || sceneRef.current?.dataset.entrance !== 'ready' || !isCollectionAligned(sceneRef.current)) {
+      cancelIntent()
+      return
+    }
     cancelIntent()
     opened.current = true
     setSelected(index)
   }
   function beginIntent(index: number, event: PointerEvent<HTMLButtonElement>) {
-    if (!ready || opened.current || event.pointerType !== 'mouse' || event.timeStamp < resumeAfter.current
+    if (!isCollectionAligned(sceneRef.current) || sceneRef.current?.dataset.entrance !== 'ready' || opened.current || event.pointerType !== 'mouse' || event.timeStamp < resumeAfter.current
       || suppressed.current === index || pending.current === index) return
     cancelIntent()
     const button = event.currentTarget
@@ -59,102 +61,51 @@ export function CollectionArchive() {
   }
 
   useEffect(() => {
-    let introTimer: ReturnType<typeof setTimeout> | undefined
-    let entered = false
-    let hasDocked = false
-    const dock = () => {
-      if (hasDocked) return
-      hasDocked = true
-      clearTimeout(introTimer)
-      setPhase(matchMedia('(prefers-reduced-motion: reduce)').matches ? 'ready' : 'docking')
-    }
-    const inspect = () => {
-      const scene = sceneRef.current!
-      const rect = scene.getBoundingClientRect()
-      const header = document.querySelector<HTMLElement>('.site-header')?.offsetHeight ?? 54
-      scene.style.setProperty('--archive-top', `${header}px`)
-      const visible = Math.max(0, Math.min(rect.bottom, innerHeight) - Math.max(rect.top, header)) / rect.height
-      if (visible > .85 && !entered) {
-        entered = true
-        // Shuffle only the arrival order; grid positions and keyboard order stay stable.
-        const ranks = collectionSlots.map((_, index) => index)
-        for (let index = ranks.length - 1; index > 0; index--) {
-          const other = Math.floor(Math.random() * (index + 1))
-          ;[ranks[index], ranks[other]] = [ranks[other], ranks[index]]
-        }
-        setRevealRanks(ranks)
-        introTimer = setTimeout(dock, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 1400)
+    const cancelWhenAway = () => {
+      if (!isCollectionAligned(sceneRef.current)) {
+        if (hoverTimer.current) clearTimeout(hoverTimer.current)
+        hoverTimer.current = null
+        pending.current = null
+        setPreview(null)
       }
-      if (visible < .05 && entered && !opened.current) {
-        entered = false
-        hasDocked = false
-        clearTimeout(introTimer)
-        setPhase('intro')
-      }
-      if (hoverTimer.current) clearTimeout(hoverTimer.current)
-      pending.current = null
-      setPreview(null)
-      resumeAfter.current = Math.max(resumeAfter.current, performance.now() + 220)
     }
-    const onWheel = (event: WheelEvent) => { if (entered && event.deltaY > 0) dock() }
-    const onKey = (event: KeyboardEvent) => { if (entered && ['ArrowDown', 'PageDown', ' '].includes(event.key)) dock() }
-    window.addEventListener('scroll', inspect, { passive: true })
-    window.addEventListener('resize', inspect)
-    window.addEventListener('wheel', onWheel, { passive: true })
-    window.addEventListener('keydown', onKey)
-    const initial = requestAnimationFrame(inspect)
+    window.addEventListener('scroll', cancelWhenAway, { passive: true })
+    window.addEventListener('resize', cancelWhenAway)
     return () => {
-      cancelAnimationFrame(initial)
-      clearTimeout(introTimer)
       if (hoverTimer.current) clearTimeout(hoverTimer.current)
-      window.removeEventListener('scroll', inspect)
-      window.removeEventListener('resize', inspect)
-      window.removeEventListener('wheel', onWheel)
-      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('scroll', cancelWhenAway)
+      window.removeEventListener('resize', cancelWhenAway)
     }
   }, [])
 
   return (
     <section className="archive" id="collection" aria-labelledby="collection-title">
-      <div ref={sceneRef} data-phase={phase} className={`archive-scene${docked ? ' is-docked' : ''}${revealing ? ' is-revealing' : ''}${selected !== null ? ' has-selection' : ''}`}>
+      <div ref={sceneRef} data-entrance="waiting" className={`archive-scene${selected !== null ? ' has-selection' : ''}`}>
         <div className="archive-composition">
           <header className="archive-intro">
             <div className="archive-copy-heading">
-            <p className="eyebrow">서울역사아카이브 <span>/03</span></p>
-            <h2 id="collection-title" aria-label="소장자료">
-              {Array.from('소장자료').map((letter, index) => <span key={index} aria-hidden="true"
-                className="archive-title-letter" style={{ '--letter-index': index } as CSSProperties}>{letter}</span>)}
-            </h2>
-            <p className="archive-theme" onAnimationEnd={event => {
-              // The trailing subtitle settles after the heading and its individual letters.
-              if (event.target === event.currentTarget && event.animationName === 'archive-theme-dock') {
-                setPhase(current => current === 'docking' ? 'revealing' : current)
-              }
-            }}>서울을 기록한 자료들</p>
+            <p className="eyebrow">{t("서울역사아카이브")} <span>/03</span></p>
+            <h2 id="collection-title">{t("소장자료")}</h2>
+            <p className="archive-theme">{t("서울을 기록한 자료들")}</p>
             </div>
-            <div className="archive-intro-more" aria-hidden={!docked} inert={!docked}>
+            <div className="archive-intro-more">
               <div className="archive-copy-summary">
-                <p className="archive-summary">책과 그림, 생활 속 물건에 남은 서울의 시간을 살펴보세요</p>
-                <p className="archive-selection-note">소장자료 중에서 고른 10점<br />머무르거나 클릭해 자세히 살펴보세요</p>
+                <p className="archive-summary">{t("책과 그림, 생활 속 물건에 남은 서울의 시간을 살펴보세요")}</p>
+                <p className="archive-selection-note">{t("소장자료 중에서 고른 10점")}<br />{t("머무르거나 클릭해 자세히 살펴보세요")}</p>
               </div>
               <div className="archive-copy-links">
                 <dl className="archive-groups">
-                <div><dt>전적과 서예</dt><dd>불경 · 서첩</dd></div>
-                <div><dt>회화와 공예</dt><dd>초상 · 백자 · 목가구</dd></div>
-                <div><dt>도시의 생활</dt><dd>음향 · 광학 · 군사</dd></div>
+                <div><dt>{t("전적과 서예")}</dt><dd>{t("불경 · 서첩")}</dd></div>
+                <div><dt>{t("회화와 공예")}</dt><dd>{t("초상 · 백자 · 목가구")}</dd></div>
+                <div><dt>{t("도시의 생활")}</dt><dd>{t("음향 · 광학 · 군사")}</dd></div>
                 </dl>
-                <a className="archive-cta" href={official.archive} target="_blank" rel="noreferrer">아카이브 보기 <span aria-hidden="true">↗</span><span className="sr-only"> (새 창)</span></a>
+                <a className="archive-cta" href={official.archive} target="_blank" rel="noreferrer">{t("아카이브 보기")} <span aria-hidden="true">↗</span><span className="sr-only"> {t("(새 창)")}</span></a>
               </div>
             </div>
           </header>
-          <div className="archive-grid-wrap" inert={!ready}>
-            <ul className="archive-grid" aria-label="소장자료 10점" onAnimationEnd={event => {
-              if (event.animationName === 'archive-card-reveal' && event.target instanceof HTMLElement && event.target.dataset.revealOrder === String(collectionSlots.length - 1)) {
-                resumeAfter.current = performance.now() + 220
-                setPhase(current => current === 'revealing' ? 'ready' : current)
-              }
-            }}>
-              {collectionSlots.map(({ item, column, row, span }, index) => <CollectionCard key={item.id} item={item} column={column} row={row} rowSpan={span} revealOrder={revealRanks[index]}
+          <div className="archive-grid-wrap">
+            <ul className="archive-grid" aria-label={t("소장자료 10점")}>
+              {collectionSlots.map(({ item, column, row, span }, index) => <CollectionCard key={item.id} item={item} column={column} row={row} rowSpan={span}
                 active={selected === index} preview={preview === index} onIntent={event => beginIntent(index, event)}
                 onLeave={() => {
                   if (suppressed.current === index) suppressed.current = null

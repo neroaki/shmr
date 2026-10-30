@@ -1,3 +1,4 @@
+import { useLanguage } from '../../i18n/LanguageContext'
 import type { CSSProperties, PointerEvent } from 'react'
 import type { ProgrammeCard as Programme } from '../../data/programme-candidates'
 import { containCardFocus } from '../../hooks/useInlineCardDialog'
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export function ProgrammeCard({ item, index, count, selectedIndex, preview, onIntent, onLeave, onOpen, onClose }: Props) {
+  const { t } = useLanguage()
   const offset = index - (count - 1) / 2
   const active = selectedIndex === index
   const expanded = selectedIndex !== null
@@ -39,18 +41,18 @@ export function ProgrammeCard({ item, index, count, selectedIndex, preview, onIn
       <div className="programme-card-plane">
         <div className="programme-card-surface">
           <button type="button" data-card-trigger className="programme-card-button" aria-haspopup="dialog" aria-expanded={active}
-            disabled={active} aria-label={`${item.title} 상세 보기`}
+            disabled={active} aria-label={`${t(item.title)} ${t('상세 보기')}`}
             onPointerEnter={onIntent} onPointerMove={onIntent} onPointerLeave={onLeave} onClick={onOpen}>
             <span className="programme-card-image">
-              <img src={item.image} alt={item.alt} width={item.width} height={item.height} loading="lazy" />
-              <span className="programme-card-open" aria-hidden="true">상세 보기 <span>↗</span></span>
+              <img src={item.image} alt={t(item.alt)} width={item.width} height={item.height} loading="lazy" />
+              <span className="programme-card-open" aria-hidden="true">{t("상세 보기")} <span>↗</span></span>
             </span>
           </button>
           <ProgrammeModal item={item} active={active} onClose={onClose} />
         </div>
         <div className="programme-card-label" aria-hidden={active}>
-          <span className="programme-card-meta"><span>{item.category}</span><span>{String(index + 1).padStart(2, '0')}</span></span>
-          <span className="programme-card-title">{item.title}</span>
+          <span className="programme-card-meta"><span>{t(item.category)}</span><span>{String(index + 1).padStart(2, '0')}</span></span>
+          <span className="programme-card-title">{t(item.title)}</span>
         </div>
       </div>
     </li>

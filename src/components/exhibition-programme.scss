@@ -24,17 +24,13 @@
   pointer-events: none;
   h2 {
     position: relative;
-    display: flex;
-    justify-content: center;
-    gap: .08em;
-    font-size: var(--programme-title-size);
-    font-weight: 400;
+    text-align: center;
+    font-size: calc(var(--programme-title-size) * .6786);
+    font-weight: 300;
+    color: var(--color-text);
     letter-spacing: -.055em;
     line-height: 1.1;
   }
-  [data-title-part] { position: relative; display: inline-flex; white-space: nowrap; }
-  [data-title-letter] { display: block; transform-origin: top left; will-change: transform; }
-  [data-title-dot] { display: block; will-change: opacity; }
 }
 /* One spatial scene: the selected card itself widens to reveal its detail. */
 .programme-gallery {
@@ -52,8 +48,7 @@
   font-size: var(--font-hero-caption);
   line-height: 1.6;
 }
-.programme-gallery-intro { margin-bottom: clamp(1rem, 2svh, 2rem); }
-.programme-gallery-intro p { color: var(--color-text); font-size: var(--font-caption); }
+.programme-gallery-intro { justify-content: flex-end; margin-bottom: clamp(1rem, 2svh, 2rem); }
 .programme-gallery-baseline { margin-top: 1.5rem; }
 .programme-gallery-track {
   user-select: none;
@@ -102,7 +97,7 @@
   height: var(--poster-height);
   transition: height 850ms var(--programme-motion-ease);
   .is-open & { height: max(var(--poster-height), min(56svh, 42rem)); }
-  background: #232323;
+  background: var(--color-surface);
   box-shadow: 0 12px 26px #00000024;
 }
 .programme .programme-card {
@@ -145,7 +140,7 @@
   inset: auto .65rem .65rem;
   padding: .5rem .7rem;
   font-size: var(--font-hero-caption);
-  background: #1c1c1ce8;
+  background: var(--color-overlay);
   color: var(--color-text);
   opacity: 0;
   transform: translateY(6px);
@@ -168,7 +163,7 @@
   display: block;
   margin-top: .5rem;
   font-size: clamp(.875rem, 1.05vw, 1.125rem);
-  font-weight: 400;
+  font-weight: 300;
   line-height: 1.5;
   letter-spacing: -.025em;
 }
@@ -221,7 +216,7 @@
   min-height: 0;
   flex: 1;
   overflow: visible;
-  h3 { font-size: clamp(1.25rem, 2.1cqw, 2.25rem); font-weight: 400; letter-spacing: -.04em; line-height: 1.3; }
+  h3 { font-size: clamp(1.25rem, 2.1cqw, 2.25rem); font-weight: 300; letter-spacing: -.04em; line-height: 1.3; }
   dl { margin: 1.25rem 0; font-size: var(--font-hero-caption); }
   dl > div { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .75rem; margin-top: .5rem; }
   dt { color: var(--color-muted); }

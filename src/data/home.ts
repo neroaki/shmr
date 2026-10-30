@@ -1,4 +1,5 @@
-import exterior from '../assets/images/museum-exterior.webp'
+import museumShm1 from '../assets/images/shm1.webp'
+import museumShm2 from '../assets/images/shm2.webp'
 import educationPoster from '../assets/images/about-education.webp'
 import eventPoster from '../assets/images/about-event.webp'
 import street from '../assets/images/gyeongseong-street.webp'
@@ -17,6 +18,11 @@ import tramGuide from '../assets/images/cutouts/gyeongseong-tram-guide.png'
 import olympicTorch from '../assets/images/cutouts/seoul-olympic-torch.png'
 
 const museum = 'https://museum.seoul.go.kr'
+export const museumExteriorPhotos = [
+  { id: 'shm1', src: museumShm1, alt: '소나무와 석상 너머로 보이는 서울역사박물관 본관 입구', width: 3264, height: 1836 },
+  { id: 'shm2', src: museumShm2, alt: '도심과 숲 사이에 자리한 서울역사박물관의 전경', width: 1800, height: 1200 },
+] as const
+
 export const official = {
   home: `${museum}/www/NR_index.do?sso=ok`,
   archive: `${museum}/archive/NR_index.do`,
@@ -166,13 +172,13 @@ export const museumServices = [
       { title: '교육·문화', detail: '시민의 배움과 체험' },
     ],
     description: '서울의 문화유산을 수집·보존하고, 도시 서울의 역사와 문화를 연구·전시합니다.',
-    image: exterior, alt: '소나무 너머로 보이는 서울역사박물관 본관 입구',
+    image: museumExteriorPhotos[0].src, alt: museumExteriorPhotos[0].alt,
     caption: '서울역사박물관 본관 · 서울특별시 제공',
     links: [{ label: '박물관 알아보기', href: official.about }],
   },
   {
-    id: 'visit', number: '02', title: '오시는 길',
-    description: '방문 전에 교통편과 관람시간을 확인하세요.',
+    id: 'visit', number: '02', title: '오시는 길・관람안내',
+    description: '주소, 관람시간, 휴관일을 확인하세요.',
     links: [
       { label: '오시는 길', href: official.location },
       { label: '관람안내', href: official.visit },

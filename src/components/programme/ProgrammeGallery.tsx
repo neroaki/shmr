@@ -1,8 +1,10 @@
+import { useLanguage } from '../../i18n/LanguageContext'
 import { useEffect, useRef, useState, type PointerEvent } from 'react'
 import type { ProgrammeCard as Programme } from '../../data/programme-candidates'
 import { ProgrammeCard } from './ProgrammeCard'
 
 export function ProgrammeGallery({ items }: { items: Programme[] }) {
+  const { t } = useLanguage()
   const [preview, setPreview] = useState<string | null>(null)
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -57,9 +59,9 @@ export function ProgrammeGallery({ items }: { items: Programme[] }) {
   return (
     <div className={`programme-gallery${selectedIndex !== null ? ' has-selection' : ''}`}>
       <div className="programme-gallery-intro">
-        <p>전시와 프로그램</p><span>선택한 다섯 가지 / 05</span>
+        <span>{t("선택한 다섯 가지 / 05")}</span>
       </div>
-      <ul className="programme-gallery-track" aria-label="기획전시와 프로그램 5선">
+      <ul className="programme-gallery-track" aria-label={t("기획전시와 프로그램 5선")}>
         {items.map((item, index) => <ProgrammeCard key={item.id} item={item} index={index} count={items.length}
           selectedIndex={selectedIndex} preview={preview === item.id} onIntent={event => beginIntent(item, index, event)}
           onLeave={() => {
@@ -74,8 +76,8 @@ export function ProgrammeGallery({ items }: { items: Programme[] }) {
           }} />)}
       </ul>
       <div className="programme-gallery-baseline">
-        <p>포스터에 잠시 머무르거나 클릭해 자세히 살펴보세요</p>
-        <span aria-hidden="true">기획전시 · 행사 · 교육</span>
+        <p>{t("포스터에 잠시 머무르거나 클릭해 자세히 살펴보세요")}</p>
+        <span aria-hidden="true">{t("기획전시 · 행사 · 교육")}</span>
       </div>
     </div>
   )

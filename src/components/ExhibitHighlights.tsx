@@ -1,3 +1,4 @@
+import { useLanguage } from '../i18n/LanguageContext'
 import { useEffect, useRef, type CSSProperties } from 'react'
 import { highlights } from '../data/home'
 import { createHighlightsScroll } from '../lib/highlights-scroll'
@@ -5,6 +6,7 @@ import { scrollPageTo } from '../lib/page-scroll'
 import './exhibit-highlights.scss'
 
 export function ExhibitHighlights() {
+  const { t } = useLanguage()
   const sequenceRef = useRef<HTMLDivElement>(null)
   const sceneRef = useRef<HTMLDivElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
@@ -60,9 +62,9 @@ export function ExhibitHighlights() {
       overviewCopy.style.width = `${expandedCopyWidth + (Math.ceil(railWidth) + 2 - railPadding * 2 - expandedCopyWidth) * dock}px`
       overviewCopy.style.setProperty('--overview-copy-dock', String(dock))
       indexList.style.width = `${expandedIndexWidth + (Math.ceil(railWidth) + 2 - railPadding - indexInset - expandedIndexWidth) * dock}px`
-      indexList.style.setProperty('--highlights-index-font-size', `${18 - 3 * dock}px`)
+      indexList.style.setProperty('--highlights-index-font-size', `${26 - 3 * dock}px`)
       indexList.style.setProperty('--highlights-index-row-padding', `${8 - 3 * dock}px`)
-      indexList.style.setProperty('--highlights-index-meta-height', `${16 * (1 - dock)}px`)
+      indexList.style.setProperty('--highlights-index-meta-height', `${24 * (1 - dock)}px`)
       indexList.style.setProperty('--highlights-index-meta-opacity', String(1 - dock))
       const indexHeight = indexList.offsetHeight
       const bottomPosition = stage.clientHeight - railPadding - indexHeight
@@ -81,8 +83,8 @@ export function ExhibitHighlights() {
         panel.inert = index > 0 && index !== active
         panel.setAttribute('aria-hidden', String(index > 0 && index !== active))
       })
-      countRef.current!.textContent = active === 0 ? `총 ${highlights.length}점` : `${String(active).padStart(2, '0')} / ${String(highlights.length).padStart(2, '0')}`
-      countRef.current!.setAttribute('aria-label', active === 0 ? `전시품 ${highlights.length}점` : `전시품 ${highlights.length}개 중 ${active}번째`)
+      countRef.current!.textContent = active === 0 ? `${t('전체')} ${highlights.length}${t('점')}` : `${String(active).padStart(2, '0')} / ${String(highlights.length).padStart(2, '0')}`
+      countRef.current!.setAttribute('aria-label', active === 0 ? `${t('전시품')} ${highlights.length}${t('점')}` : `${t('전시품')} ${active} / ${highlights.length}`)
       previousRef.current!.disabled = left <= 1
       nextRef.current!.disabled = left >= (panels.length - 1) * width - 1
     }
@@ -103,7 +105,7 @@ export function ExhibitHighlights() {
       heading.style.removeProperty('font-size')
       expandedHeadingSize = parseFloat(getComputedStyle(heading).fontSize)
       const rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
-      dockedHeadingSize = Math.min(4.5 * rem, Math.max(2.625 * rem, innerWidth * .036))
+      dockedHeadingSize = Math.min(4.5 * rem, Math.max(2.625 * rem, innerWidth * .036)) * .7
       motion = createHighlightsScroll((panels.length - 1) * width, available)
       // The overview and all objects always share one horizontal stack, at every size.
       sequence.dataset.pinned = 'true'
@@ -165,40 +167,39 @@ export function ExhibitHighlights() {
       goToRef.current = () => {}
       moveRef.current = () => {}
     }
-  }, [])
+  }, [t])
 
   return (
     <section className="highlights" id="featured" aria-labelledby="highlights-title">
       <div className="highlights-sequence" ref={sequenceRef}>
         <div className="highlights-scene" ref={sceneRef}>
           <div className="highlights-toolbar" ref={toolbarRef}>
-            <span className="highlights-label">주요 전시품</span>
             <div className="highlights-navigation">
-              <span className="highlights-count" ref={countRef}>총 {highlights.length}점</span>
-              <button className="highlights-list-button" type="button" aria-label="주요 전시품 목록으로 돌아가기" onClick={event => goToRef.current(0, event.detail === 0)}>목록 <span aria-hidden="true">↖</span></button>
+              <span className="highlights-count" ref={countRef}>{t('전체')} {highlights.length}{t('점')}</span>
+              <button className="highlights-list-button" type="button" aria-label={t("주요 전시품 목록으로 돌아가기")} onClick={event => goToRef.current(0, event.detail === 0)}>{t("목록")} <span aria-hidden="true">↖</span></button>
               <div className="highlights-buttons">
-                <button type="button" ref={previousRef} aria-label="이전 전시품" onClick={() => moveRef.current(-1)}>←</button>
-                <button type="button" ref={nextRef} aria-label="다음 전시품" onClick={() => moveRef.current(1)}>→</button>
+                <button type="button" ref={previousRef} aria-label={t("이전 전시품")} onClick={() => moveRef.current(-1)}>←</button>
+                <button type="button" ref={nextRef} aria-label={t("다음 전시품")} onClick={() => moveRef.current(1)}>→</button>
               </div>
-              <a className="highlights-skip" href="#exhibitions">기획전시·프로그램으로 이동 <span aria-hidden="true">↓</span></a>
+              <a className="highlights-skip" href="#exhibitions">{t("기획전시·프로그램으로 이동")} <span aria-hidden="true">↓</span></a>
             </div>
           </div>
           <div className="highlights-stage" ref={stageRef}>
             <header className="highlights-panel highlights-overview" style={{ '--exhibit-layer': 0 } as CSSProperties}>
               <div className="highlights-overview-heading">
-                <h2 id="highlights-title" tabIndex={-1}>주요 전시품</h2>
+                <h2 id="highlights-title" tabIndex={-1}>{t("주요 전시품")}</h2>
               </div>
               <div className="highlights-overview-body">
                 <div className="highlights-overview-copy">
-                  <p>지도와 책, 도시의 기록에서<br />서울의 변화를 살펴보세요</p>
-                  <p>한양의 지도와 새로운 문물을 담은 책, 전차 안내서와 올림픽 성화봉까지 네 점을 소개합니다</p>
+                  <p>{t("지도와 책, 도시의 기록에서")}<br />{t("서울의 변화를 살펴보세요")}</p>
+                  <p>{t("한양의 지도와 새로운 문물을 담은 책, 전차 안내서와 올림픽 성화봉까지 네 점을 소개합니다")}</p>
                 </div>
-                <ol className="highlights-index" aria-label="주요 전시품 목록">
+                <ol className="highlights-index" aria-label={t("주요 전시품 목록")}>
                   {highlights.map((item, index) => (
                     <li key={item.id}>
                       <button type="button" aria-controls={`exhibit-${item.id}`} onClick={event => goToRef.current(index + 1, event.detail === 0)}>
                         <span className="highlights-index-number">{item.number}</span>
-                        <span>{item.title}<small>{item.category}</small></span>
+                        <span>{t(item.title)}<small>{t(item.category)}</small></span>
                         <span aria-hidden="true">↗</span>
                       </button>
                     </li>
@@ -217,14 +218,14 @@ export function ExhibitHighlights() {
               } as CSSProperties}>
                 <div className="exhibit-panel-body">
                   <div className="exhibit-panel-image">
-                    <img src={item.image} alt={item.alt} width={item.width} height={item.height} loading="lazy" decoding="async" />
+                    <img src={item.image} alt={t(item.alt)} width={item.width} height={item.height} loading="lazy" decoding="async" />
                   </div>
                   <div className="exhibit-panel-copy">
-                    <p className="eyebrow">{item.category}</p>
-                    <h3 id={`exhibit-title-${item.id}`} tabIndex={-1}>{item.title}</h3>
-                    <p className="exhibit-panel-description">{item.description}</p>
-                    <p className="exhibit-panel-credit">서울역사박물관 제공</p>
-                    <a className="text-link" href={item.source} aria-label={`${item.title} 공식 전시물 설명 보기`}>전시물 설명 보기 <span aria-hidden="true">↗</span></a>
+                    <p className="eyebrow">{t(item.category)}</p>
+                    <h3 id={`exhibit-title-${item.id}`} tabIndex={-1}>{t(item.title)}</h3>
+                    <p className="exhibit-panel-description">{t(item.description)}</p>
+                    <p className="exhibit-panel-credit">{t("서울역사박물관 제공")}</p>
+                    <a className="text-link" href={item.source} aria-label={`${t(item.title)} ${t('공식 전시물 설명 보기')}`}>{t("전시물 설명 보기")} <span aria-hidden="true">↗</span></a>
                   </div>
                 </div>
               </section>

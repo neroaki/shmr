@@ -72,8 +72,8 @@ export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
       dockTimer = window.setTimeout(dock, 1600)
       const titleMotion = animateHeroTitle(title)
       animations.push(...titleMotion)
-      root.querySelectorAll('.hero-meta, .hero-notes, .hero-baseline').forEach(element => {
-        animate(element, [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 600, delay: 1600, easing: 'cubic-bezier(.22,1,.36,1)' })
+      root.querySelectorAll('.hero-meta, .hero-notes, .hero-brand').forEach(element => {
+        animate(element, element.classList.contains('hero-brand') ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 600, delay: 1600, easing: 'cubic-bezier(.22,1,.36,1)' })
       })
       // The photo releases scrolling at 1.6s; the typography finishes independently.
       const last = titleMotion.at(-1)!
