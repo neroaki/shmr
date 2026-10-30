@@ -15,10 +15,10 @@ export function useProgrammeHeading(sectionRef: RefObject<HTMLElement | null>, h
     let frame = 0
     let lastTime = 0
     let current = 0
-    let initialized = false
 
+    const splitScale = .78
     let measureNeeded = true
-    let geometry: { startX: number; endX: number; endY: number }[][] = []
+    let geometry: { startX: number; endX: number; endY: number; rowY: number }[][] = []
     const smoothstep = (value: number) => {
       const p = Math.min(1, Math.max(0, value))
       return p * p * (3 - 2 * p)
@@ -31,19 +31,25 @@ export function useProgrammeHeading(sectionRef: RefObject<HTMLElement | null>, h
       const innerLeft = sectionBox.left + parseFloat(sectionStyle.paddingLeft)
       const innerRight = sectionBox.right - parseFloat(sectionStyle.paddingRight)
       const size = parseFloat(getComputedStyle(heading).fontSize)
+      const clusterInset = contentBox.width * .11
       const axes = [
-        (innerLeft + contentBox.left) / 2 - headingBox.left,
-        (contentBox.right + innerRight) / 2 - headingBox.left,
+        (innerLeft + contentBox.left + clusterInset) / 2 - headingBox.left,
+        (contentBox.right - clusterInset + innerRight) / 2 - headingBox.left,
       ]
       geometry = letters.map((group, side) => {
-        let startX = words[side].getBoundingClientRect().left - headingBox.left
+        const scene = section.querySelector<HTMLElement>('.programme-scene')!
+        const railTop = (scene.clientHeight - size * 2.24 * splitScale) / 2
+          - (headingBox.top - scene.getBoundingClientRect().top)
         return group.map((letter, index) => {
-          const width = letter.getBoundingClientRect().width
-          const scene = section.querySelector<HTMLElement>('.programme-scene')!
-          const railTop = Math.max(0, (scene.clientHeight - size * 4.48) / 2 - headingBox.top + scene.getBoundingClientRect().top)
-          const point = { startX, endX: axes[side] - width / 2, endY: railTop + index * size * 1.12 }
-          startX += width
-          return point
+          const rowStart = Math.floor(index / 2) * 2
+          const rowWidth = group[rowStart].offsetWidth + group[rowStart + 1].offsetWidth
+          const localX = index % 2 ? group[rowStart].offsetWidth : 0
+          return {
+            startX: words[side].offsetLeft + letter.offsetLeft,
+            endX: axes[side] - rowWidth * splitScale / 2 + localX * splitScale,
+            endY: railTop,
+            rowY: Math.floor(index / 2) * size * 1.12 * splitScale,
+          }
         })
       })
       measureNeeded = false
@@ -54,33 +60,32 @@ export function useProgrammeHeading(sectionRef: RefObject<HTMLElement | null>, h
       const headerHeight = header?.getBoundingClientRect().height ?? 54
       section.style.setProperty('--programme-header-height', `${headerHeight}px`)
       if (measureNeeded) measure()
-      const distance = Math.min(420, window.innerHeight * 0.46)
-      const progress = window.innerWidth <= 900 ? 0 : reducedMotion.matches ? 1 : Math.min(1, Math.max(0,
-        (headerHeight - section.getBoundingClientRect().top) / distance,
-      ))
-      const target = 1 - (1 - progress) ** 2
-      // Time-based damping preserves a short, soft follow-through at any refresh rate.
+      const sectionBox = section.getBoundingClientRect()
+      // Use the approach to the viewport, not the extra scroll distance inside the
+      // pinned section. Even a slow arrival has already unfolded the heading.
+      const viewport = window.innerHeight - headerHeight
+      const entryStart = headerHeight + viewport * .78
+      const entryEnd = headerHeight + viewport * .12
+      const target = window.innerWidth > 900
+        ? Math.min(1, Math.max(0, (entryStart - sectionBox.top) / (entryStart - entryEnd)))
+        : 0
+      // A longer, time-based follow-through softens fast wheel and menu navigation.
       // Stop requesting frames once settled; no idle animation or scroll interception.
       const elapsed = lastTime ? Math.min(64, time - lastTime) : 16.67
       lastTime = time
-      const outside = section.getBoundingClientRect().bottom <= headerHeight
-        || section.getBoundingClientRect().top >= window.innerHeight
-      if (!initialized || reducedMotion.matches || outside) current = target
-      else current += (target - current) * (1 - Math.exp(-elapsed / 170))
-      initialized = true
+      const outside = sectionBox.bottom <= headerHeight || sectionBox.top >= window.innerHeight
+      if (reducedMotion.matches || outside) current = target
+      else current += (target - current) * (1 - Math.exp(-elapsed / 340))
       const settled = Math.abs(target - current) < 0.0002
       if (settled) current = target
-      // One damped progress drives all eight upright glyphs; no independent drift.
-      const travel = smoothstep(current / 0.65)
-      const fold = smoothstep((current - 0.55) / 0.45)
+      // The same reversible progress forms two compact rows and scales them to 78%.
+      const travel = smoothstep(current)
+      const fold = smoothstep((current - .15) / .85)
+      // Give the lower pair vertical room before compressing it into two columns.
+      const row = smoothstep(current / .45)
       letters.forEach((group, side) => group.forEach((letter, index) => {
         const point = geometry[side][index]
-        // Move the word as a group first, then fold the letters onto a vertical axis.
-        const groupStart = geometry[side][0].startX
-        const groupWidth = words[side].offsetWidth
-        const wordShift = point.endX + letter.offsetWidth / 2 - (groupStart + groupWidth / 2)
-        const localShift = (groupStart + groupWidth / 2) - (point.startX + letter.offsetWidth / 2)
-        letter.style.transform = `translate3d(${wordShift * travel + localShift * fold}px, ${point.endY * fold}px, 0)`
+        letter.style.transform = `translate3d(${(point.endX - point.startX) * travel}px, ${point.endY * fold + point.rowY * row}px, 0) scale(${1 - (1 - splitScale) * travel})`
       }))
       dot.style.opacity = String(1 - smoothstep(current / 0.45))
       if (!settled) frame = requestAnimationFrame(update)

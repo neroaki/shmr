@@ -5,7 +5,9 @@ import { containCardFocus } from '../../hooks/useInlineCardDialog'
 
 interface Props {
   item: ArchiveObject
-  index: number
+  column: number
+  row: number
+  rowSpan: number
   revealOrder: number
   active: boolean
   preview: boolean
@@ -15,10 +17,10 @@ interface Props {
   onClose: () => void
 }
 
-export function CollectionCard({ item, index, revealOrder, active, preview, onIntent, onLeave, onOpen, onClose }: Props) {
+export function CollectionCard({ item, column, row, rowSpan, revealOrder, active, preview, onIntent, onLeave, onOpen, onClose }: Props) {
   return (
     <li className={`collection-card${active ? ' is-open' : ''}${preview ? ' is-previewing' : ''}`}
-      style={{ '--reveal-index': revealOrder, '--column': index % 4, '--row': Math.floor(index / 4) } as CSSProperties}
+      style={{ '--reveal-index': revealOrder, '--column': column, '--row': row, '--row-span': rowSpan } as CSSProperties}
       data-reveal-order={revealOrder} data-inline-card role={active ? 'dialog' : undefined} aria-modal={active || undefined}
       aria-labelledby={active ? `collection-title-${item.id}` : undefined}
       aria-describedby={active ? `collection-description-${item.id}` : undefined}

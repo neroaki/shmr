@@ -30,7 +30,7 @@ export function Home() {
             <figcaption className="hero-notes" lang="en">
               <div className="hero-story">
                 <p className="hero-question">What was Seoul like<br />before you knew it</p>
-                <p>A tram follows the rails<br />People cross the open street<br />Buildings frame the distance</p>
+                <p>Life went on beyond<br />the edges of this frame</p>
                 <p>Before this was a photograph,<br />it was an ordinary day in Seoul</p>
                 <a href={official.archive}>Explore the archive <span aria-hidden="true">↗</span></a>
               </div>
@@ -42,13 +42,13 @@ export function Home() {
             </figcaption>
           </figure>
         </div>
-        <h1 className="hero-title" id="museum-title" lang="en">
-          <span>Seoul</span>{' '}
-          <span className="hero-title-highlight">
-            Museum
-            <span className="hero-title-highlight-inverse" aria-hidden="true">Museum</span>
-          </span>{' '}
-          <span>of</span>{' '}<span>History</span>
+        <h1 className="hero-title" id="museum-title" lang="en" aria-label="Seoul Museum of History">
+          <span data-hero-word="seoul" aria-hidden="true"><span className="hero-word-ink">Seoul</span></span>
+          <span className="hero-title-highlight" aria-hidden="true">
+            {Array.from('Museum').map((letter, index) => <span className="hero-museum-letter" key={index}>{letter}</span>)}
+          </span>
+          <span data-hero-word="of" aria-hidden="true"><span className="hero-word-ink">of</span></span>
+          <span data-hero-word="history" aria-hidden="true"><span className="hero-word-ink">History</span></span>
         </h1>
         <div className="hero-baseline" lang="en">
           <span>Seoul Museum of History</span>

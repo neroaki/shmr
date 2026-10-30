@@ -4,13 +4,27 @@ import { official } from '../data/home'
 import { CollectionCard } from './collection/CollectionCard'
 import './collection-archive.scss'
 
+// Five columns × three rows. The unoccupied L-shaped area carries the section copy.
+const collectionSlots = [
+  { id: 'bulanggi', column: 1, row: 0, span: 1 },
+  { id: 'yeonggajip', column: 2, row: 0, span: 1 },
+  { id: 'ryu-sunjeong', column: 3, row: 0, span: 2 },
+  { id: 'hanho', column: 4, row: 0, span: 1 },
+  { id: 'victrola', column: 2, row: 1, span: 1 },
+  { id: 'ryu-hong', column: 4, row: 1, span: 2 },
+  { id: 'landscape-jar', column: 0, row: 2, span: 1 },
+  { id: 'military-chest', column: 1, row: 2, span: 1 },
+  { id: 'copper-jar', column: 2, row: 2, span: 1 },
+  { id: 'surangama', column: 3, row: 2, span: 1 },
+].map(slot => ({ ...slot, item: archiveObjects.find(item => item.id === slot.id)! }))
+
 export function CollectionArchive() {
   const sceneRef = useRef<HTMLDivElement>(null)
   const [phase, setPhase] = useState<'intro' | 'docking' | 'revealing' | 'ready'>('intro')
   const docked = phase !== 'intro'
   const revealing = phase === 'revealing' || phase === 'ready'
   const ready = phase === 'ready'
-  const [revealRanks, setRevealRanks] = useState(() => archiveObjects.map((_, index) => index))
+  const [revealRanks, setRevealRanks] = useState(() => collectionSlots.map((_, index) => index))
   const [preview, setPreview] = useState<number | null>(null)
   const [selected, setSelected] = useState<number | null>(null)
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -63,7 +77,7 @@ export function CollectionArchive() {
       if (visible > .85 && !entered) {
         entered = true
         // Shuffle only the arrival order; grid positions and keyboard order stay stable.
-        const ranks = archiveObjects.map((_, index) => index)
+        const ranks = collectionSlots.map((_, index) => index)
         for (let index = ranks.length - 1; index > 0; index--) {
           const other = Math.floor(Math.random() * (index + 1))
           ;[ranks[index], ranks[other]] = [ranks[other], ranks[index]]
@@ -103,49 +117,57 @@ export function CollectionArchive() {
   return (
     <section className="archive" id="collection" aria-labelledby="collection-title">
       <div ref={sceneRef} data-phase={phase} className={`archive-scene${docked ? ' is-docked' : ''}${revealing ? ' is-revealing' : ''}${selected !== null ? ' has-selection' : ''}`}>
-        <header className="archive-intro">
-          <p className="eyebrow">서울역사아카이브 <span>/03</span></p>
-          <h2 id="collection-title" aria-label="소장자료">
-            {Array.from('소장자료').map((letter, index) => <span key={index} aria-hidden="true"
-              className="archive-title-letter" style={{ '--letter-index': index } as CSSProperties}>{letter}</span>)}
-          </h2>
-          <p className="archive-theme" onAnimationEnd={event => {
-            // The trailing subtitle settles after the heading and its individual letters.
-            if (event.target === event.currentTarget && event.animationName === 'archive-theme-dock') {
-              setPhase(current => current === 'docking' ? 'revealing' : current)
-            }
-          }}>서울을 기록한 자료들</p>
-          <div className="archive-intro-more" aria-hidden={!docked} inert={!docked}>
-            <p className="archive-summary">책과 그림, 생활 속 물건에 남은 서울의 시간을 살펴보세요</p>
-            <dl className="archive-groups">
-              <div><dt>전적과 서예</dt><dd>불경 · 서첩</dd></div>
-              <div><dt>회화와 공예</dt><dd>초상 · 백자 · 목가구</dd></div>
-              <div><dt>도시의 생활</dt><dd>음향 · 광학 · 군사</dd></div>
-            </dl>
-            <p className="archive-selection-note">소장자료 중에서 고른 12점<br />머무르거나 클릭해 자세히 살펴보세요</p>
-            <a className="archive-cta" href={official.archive} target="_blank" rel="noreferrer">아카이브 보기 <span aria-hidden="true">↗</span><span className="sr-only"> (새 창)</span></a>
+        <div className="archive-composition">
+          <header className="archive-intro">
+            <div className="archive-copy-heading">
+            <p className="eyebrow">서울역사아카이브 <span>/03</span></p>
+            <h2 id="collection-title" aria-label="소장자료">
+              {Array.from('소장자료').map((letter, index) => <span key={index} aria-hidden="true"
+                className="archive-title-letter" style={{ '--letter-index': index } as CSSProperties}>{letter}</span>)}
+            </h2>
+            <p className="archive-theme" onAnimationEnd={event => {
+              // The trailing subtitle settles after the heading and its individual letters.
+              if (event.target === event.currentTarget && event.animationName === 'archive-theme-dock') {
+                setPhase(current => current === 'docking' ? 'revealing' : current)
+              }
+            }}>서울을 기록한 자료들</p>
+            </div>
+            <div className="archive-intro-more" aria-hidden={!docked} inert={!docked}>
+              <div className="archive-copy-summary">
+                <p className="archive-summary">책과 그림, 생활 속 물건에 남은 서울의 시간을 살펴보세요</p>
+                <p className="archive-selection-note">소장자료 중에서 고른 10점<br />머무르거나 클릭해 자세히 살펴보세요</p>
+              </div>
+              <div className="archive-copy-links">
+                <dl className="archive-groups">
+                <div><dt>전적과 서예</dt><dd>불경 · 서첩</dd></div>
+                <div><dt>회화와 공예</dt><dd>초상 · 백자 · 목가구</dd></div>
+                <div><dt>도시의 생활</dt><dd>음향 · 광학 · 군사</dd></div>
+                </dl>
+                <a className="archive-cta" href={official.archive} target="_blank" rel="noreferrer">아카이브 보기 <span aria-hidden="true">↗</span><span className="sr-only"> (새 창)</span></a>
+              </div>
+            </div>
+          </header>
+          <div className="archive-grid-wrap" inert={!ready}>
+            <ul className="archive-grid" aria-label="소장자료 10점" onAnimationEnd={event => {
+              if (event.animationName === 'archive-card-reveal' && event.target instanceof HTMLElement && event.target.dataset.revealOrder === String(collectionSlots.length - 1)) {
+                resumeAfter.current = performance.now() + 220
+                setPhase(current => current === 'revealing' ? 'ready' : current)
+              }
+            }}>
+              {collectionSlots.map(({ item, column, row, span }, index) => <CollectionCard key={item.id} item={item} column={column} row={row} rowSpan={span} revealOrder={revealRanks[index]}
+                active={selected === index} preview={preview === index} onIntent={event => beginIntent(index, event)}
+                onLeave={() => {
+                  if (suppressed.current === index) suppressed.current = null
+                  if (pending.current === index) cancelIntent()
+                }} onOpen={() => open(index)} onClose={() => {
+                  cancelIntent()
+                  resumeAfter.current = performance.now() + 1100
+                  suppressed.current = index
+                  opened.current = false
+                  setSelected(null)
+                }} />)}
+            </ul>
           </div>
-        </header>
-        <div className="archive-grid-wrap" inert={!ready}>
-          <ul className="archive-grid" aria-label="소장자료 12점" onAnimationEnd={event => {
-            if (event.animationName === 'archive-card-reveal' && event.target instanceof HTMLElement && event.target.dataset.revealOrder === String(archiveObjects.length - 1)) {
-              resumeAfter.current = performance.now() + 220
-              setPhase(current => current === 'revealing' ? 'ready' : current)
-            }
-          }}>
-            {archiveObjects.map((item, index) => <CollectionCard key={item.id} item={item} index={index} revealOrder={revealRanks[index]}
-              active={selected === index} preview={preview === index} onIntent={event => beginIntent(index, event)}
-              onLeave={() => {
-                if (suppressed.current === index) suppressed.current = null
-                if (pending.current === index) cancelIntent()
-              }} onOpen={() => open(index)} onClose={() => {
-                cancelIntent()
-                resumeAfter.current = performance.now() + 1100
-                suppressed.current = index
-                opened.current = false
-                setSelected(null)
-              }} />)}
-          </ul>
         </div>
       </div>
     </section>

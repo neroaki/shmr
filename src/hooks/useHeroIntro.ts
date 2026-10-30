@@ -1,4 +1,6 @@
 import { useLayoutEffect, type RefObject } from 'react'
+import { lockPageScroll } from '../lib/page-scroll'
+import { animateHeroTitle } from '../lib/hero-title-motion'
 
 // One photograph and one heading travel continuously into their resting layout.
 export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
@@ -17,9 +19,18 @@ export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
     let loaded = false
     let animations: Animation[] = []
     let observer: IntersectionObserver | undefined
+    let unlock: (() => void) | undefined
+    let dockTimer = 0
+    const releaseScroll = () => {
+      clearTimeout(dockTimer)
+      const release = unlock
+      unlock = undefined
+      release?.()
+    }
     const finish = () => {
       running = false
       root.dataset.intro = 'settled'
+      releaseScroll()
       animations.forEach(animation => animation.cancel())
       animations = []
       photo.removeAttribute('style')
@@ -32,9 +43,8 @@ export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
       running = true
       root.dataset.intro = 'preparing'
       const target = slot.getBoundingClientRect()
-      const text = title.getBoundingClientRect()
-      const shift = innerHeight * .51 - (text.top + text.height / 2)
-      const ease = 'cubic-bezier(.65, 0, .2, 1)'
+      const ease = 'cubic-bezier(.45, 0, .2, 1)'
+      unlock = lockPageScroll()
       const animate = (element: Element, frames: Keyframe[], options: KeyframeAnimationOptions) => {
         const animation = element.animate(frames, { fill: 'both', ...options })
         animations.push(animation)
@@ -43,41 +53,42 @@ export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
       Object.assign(photo.style, { position: 'fixed', inset: 'auto', left: '0px', top: '0px', width: `${innerWidth}px`, height: `${innerHeight}px`, zIndex: '2' })
       root.dataset.intro = 'playing'
       // A slow image push precedes the retreat; the typography stays on a separate plane.
-      animate(image, [{ transform: 'scale(1.09)' }, { transform: 'scale(1.025)', offset: .46 }, { transform: 'scale(1)' }], { duration: 4300, easing: 'cubic-bezier(.25,.1,.25,1)' })
+      animate(image, [{ transform: 'scale(1.09)' }, { transform: 'scale(1.025)', offset: .46 }, { transform: 'scale(1)' }], { duration: 1600, easing: 'cubic-bezier(.25,.1,.25,1)' })
       animate(photo, [
         { left: '0px', top: '0px', width: `${innerWidth}px`, height: `${innerHeight}px` },
         { left: `${target.left}px`, top: `${target.top}px`, width: `${target.width}px`, height: `${target.height}px` },
-      ], { duration: 2200, delay: 2100, easing: ease })
-      animate(title, [
-        { transform: `translateY(${shift}px) scale(.74)`, color: '#fdfaf2' },
-        { transform: 'translateY(0) scale(1)', color: '#fdfaf2' },
-      ], { duration: 2200, delay: 2100, easing: ease })
-      Array.from(title.children).forEach((word, index) => {
-        animate(word, [
-          { opacity: 0, transform: 'translateY(.22em)', filter: 'blur(5px)' },
-          { opacity: 1, transform: 'translateY(0)', filter: 'blur(0)' },
-        ], { duration: 1250, delay: 500 + index * 95, easing: 'cubic-bezier(.22,1,.36,1)' })
-      })
-      animate(root.querySelector('.hero-photo-shade')!, [{ opacity: .33 }, { opacity: 0 }], { duration: 1900, delay: 2250, easing: ease })
-      const end = animate(root.querySelector('.hero-title-highlight-inverse')!, [
-        { clipPath: 'inset(0 0 0 100%)' }, { clipPath: 'inset(0 0 0 0%)' },
-      ], { duration: 600, delay: 4350, easing: 'cubic-bezier(.4,0,.2,1)' })
+      ], { duration: 1300, delay: 300, easing: ease })
+      animate(root.querySelector('.hero-photo-shade')!, [{ opacity: .33 }, { opacity: 0 }], { duration: 1200, delay: 350, easing: ease })
+      // Return the photograph to document flow before scrolling becomes available.
+      const travel = [...animations]
+      const dock = () => {
+        if (!alive || !running || !unlock) return
+        travel.forEach(animation => animation.cancel())
+        photo.removeAttribute('style')
+        title.removeAttribute('style')
+        root.dataset.intro = 'revealing'
+        releaseScroll()
+      }
+      dockTimer = window.setTimeout(dock, 1600)
+      const titleMotion = animateHeroTitle(title)
+      animations.push(...titleMotion)
       root.querySelectorAll('.hero-meta, .hero-notes, .hero-baseline').forEach(element => {
-        animate(element, [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 700, delay: 4300, easing: 'cubic-bezier(.22,1,.36,1)' })
+        animate(element, [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 600, delay: 1600, easing: 'cubic-bezier(.22,1,.36,1)' })
       })
-      // All supporting copy has settled after 5s; cancellation never queues a stale replay.
-      const last = animations.at(-1) ?? end
+      // The photo releases scrolling at 1.6s; the typography finishes independently.
+      const last = titleMotion.at(-1)!
       void last.finished.then(() => { if (alive && running) finish() }).catch(() => {})
     }
     const onScroll = () => {
       const bounds = root.getBoundingClientRect()
-      if (running && Math.abs(bounds.top) > 64) finish()
+      if (running && !unlock && bounds.bottom <= 0) finish()
       if (bounds.bottom <= 0) armed = true
       if (armed && bounds.top >= -2 && bounds.top < 40) play()
     }
     const interrupt = () => { if (running) finish() }
     const onKey = (event: KeyboardEvent) => {
-      if (['Tab', 'Escape', 'PageDown', 'ArrowDown', 'End', ' '].includes(event.key)) interrupt()
+      if (['Tab', 'Escape'].includes(event.key)) interrupt()
+      else if (unlock && ['PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End', ' '].includes(event.key)) event.preventDefault()
     }
     void Promise.allSettled([document.fonts.ready, image.decode()]).then(() => {
       if (!alive) return
@@ -92,7 +103,12 @@ export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
       observer.observe(root)
     })
     window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('wheel', interrupt, { passive: true })
+    const onNavigate = (event: MouseEvent) => {
+      if (event.target instanceof Element && event.target.closest('a')) interrupt()
+    }
+    const onVisibility = () => { if (document.hidden) interrupt() }
+    window.addEventListener('click', onNavigate, true)
+    document.addEventListener('visibilitychange', onVisibility)
     window.addEventListener('keydown', onKey)
     window.addEventListener('resize', interrupt)
     reduced.addEventListener('change', interrupt)
@@ -101,7 +117,8 @@ export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
       observer?.disconnect()
       finish()
       window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('wheel', interrupt)
+      window.removeEventListener('click', onNavigate, true)
+      document.removeEventListener('visibilitychange', onVisibility)
       window.removeEventListener('keydown', onKey)
       window.removeEventListener('resize', interrupt)
       reduced.removeEventListener('change', interrupt)

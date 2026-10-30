@@ -5,7 +5,6 @@
   margin-block: var(--scene-safety-gap);
   padding-inline: var(--inner-gutter);
   height: calc(100svh - var(--programme-header-height, var(--header-height)) + min(420px, 46svh));
-  border-top: 1px solid var(--color-border);
   overflow: clip;
   overflow-anchor: none;
 }
@@ -34,7 +33,7 @@
     line-height: 1.1;
   }
   [data-title-part] { position: relative; display: inline-flex; white-space: nowrap; }
-  [data-title-letter] { display: block; will-change: transform; }
+  [data-title-letter] { display: block; transform-origin: top left; will-change: transform; }
   [data-title-dot] { display: block; will-change: opacity; }
 }
 /* One spatial scene: the selected card itself widens to reveal its detail. */
@@ -55,16 +54,16 @@
 }
 .programme-gallery-intro { margin-bottom: clamp(1rem, 2svh, 2rem); }
 .programme-gallery-intro p { color: var(--color-text); font-size: var(--font-caption); }
-.programme-gallery-baseline { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--color-border); }
+.programme-gallery-baseline { margin-top: 1.5rem; }
 .programme-gallery-track {
   user-select: none;
   --poster-height: min(44cqw, 48svh, 45rem);
   --poster-width: calc(var(--poster-height) * 2 / 3);
   position: relative;
   height: calc(var(--poster-height) + 8rem);
-  perspective: 1300px;
-  perspective-origin: 50% 40%;
-  transform-style: preserve-3d;
+  --programme-perspective: 1300px;
+  // Independent planes: perspective must not let sibling posters intersect.
+  isolation: isolate;
 }
 .programme-card {
   position: absolute;
@@ -73,19 +72,30 @@
   width: var(--poster-width);
   min-width: 0;
   z-index: var(--card-order);
-  transform: translateX(-50%) translateY(var(--card-lift)) translateZ(1px) rotateY(var(--card-angle)) scale(var(--card-scale));
+  transform: translateX(-50%) translateY(var(--card-lift)) scale(var(--card-scale));
   transform-origin: center 40%;
   transition: left 850ms var(--programme-motion-ease), width 850ms var(--programme-motion-ease),
-    transform 850ms var(--programme-motion-ease), filter 650ms ease;
+    transform 850ms var(--programme-motion-ease), filter 650ms ease, z-index 0s 850ms;
   &.is-previewing {
-    transform: translateX(-50%) translateY(var(--card-lift)) translateZ(35px) rotateY(0) scale(1.03);
+    transform: translateX(-50%) translateY(var(--card-lift)) scale(1.03);
     z-index: 9;
+    transition-delay: 0s;
   }
   &.is-open {
     width: 68%;
-    transform: translateX(-50%) translateY(1.5rem) translateZ(1px) rotateY(0) scale(1);
+    transform: translateX(-50%) translateY(1.5rem) scale(1);
+    z-index: 10;
+    transition-delay: 0s;
   }
   &.is-neighbour { filter: brightness(.6); }
+}
+.programme-card-plane {
+  transform: perspective(var(--programme-perspective)) rotateY(var(--card-angle));
+  transform-origin: center 40%;
+  transition: transform 850ms var(--programme-motion-ease);
+  .is-previewing > &, .is-open > & {
+    transform: perspective(var(--programme-perspective)) rotateY(0);
+  }
 }
 .programme-card-surface {
   display: flex;
@@ -94,6 +104,19 @@
   .is-open & { height: max(var(--poster-height), min(56svh, 42rem)); }
   background: #232323;
   box-shadow: 0 12px 26px #00000024;
+}
+.programme .programme-card {
+  --detail-edge: clamp(1.25rem, 2.6cqw, 3rem);
+  --detail-height: max(var(--poster-height), min(56svh, 42rem));
+  --detail-image-width: calc(var(--detail-height) * var(--card-image-ratio));
+  &.is-open .programme-card-surface { padding-inline: var(--detail-edge); }
+  &.is-open .programme-card-button { flex-basis: var(--detail-image-width); width: var(--detail-image-width); }
+  .programme-card-button { transition: flex-basis 850ms var(--programme-motion-ease), width 850ms var(--programme-motion-ease); }
+  .programme-card-surface { transition: height 850ms var(--programme-motion-ease), padding 850ms var(--programme-motion-ease); }
+  .programme-detail-inner {
+    width: calc(68cqw - var(--detail-image-width) - 2 * var(--detail-edge));
+    padding: var(--detail-edge) 0 var(--detail-edge) var(--detail-edge);
+  }
 }
 .programme-card-button {
   display: block;
@@ -209,7 +232,7 @@
 .inline-detail-content { display: flow-root; }
 .programme-detail-credit { margin-top: auto; padding-top: 1rem; color: var(--color-muted); font-size: var(--font-hero-caption); }
 @media (min-width: 2400px) {
-  .programme-gallery-track { perspective: 2100px; }
+  .programme-gallery-track { --programme-perspective: 2100px; }
 }
 @media (max-height: 760px) and (min-width: 901px) {
   .programme-gallery { padding-top: 4rem; }
@@ -224,5 +247,5 @@
   .programme-gallery-baseline > span { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .programme-card, .programme-card-surface, .programme-card-label, .programme-detail, .programme-detail-inner { transition: none !important; }
+  .programme-card, .programme-card-plane, .programme-card-surface, .programme-card-label, .programme-detail, .programme-detail-inner { transition: none !important; }
 }

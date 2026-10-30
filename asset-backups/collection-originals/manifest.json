@@ -1,0 +1,82 @@
+[
+  {
+    "name": "bulanggi",
+    "width": 715,
+    "height": 496,
+    "sha256": "82d24c58f46e7d4de15631524ab7c1db171bdc12933576fe00ef35550df1db39",
+    "source": "src/assets/images/collection/bulanggi.webp",
+    "backup": "asset-backups/collection-originals/bulanggi.webp"
+  },
+  {
+    "name": "yeonggajip",
+    "width": 2048,
+    "height": 1536,
+    "sha256": "9287c9540dbfd6df38ef8bdfe2b4815932ea7069f07c1848d8446b39a48cb993",
+    "source": "src/assets/images/collection/yeonggajip.webp",
+    "backup": "asset-backups/collection-originals/yeonggajip.webp"
+  },
+  {
+    "name": "hanho",
+    "width": 1200,
+    "height": 901,
+    "sha256": "cad651877b23af80d25899e140da88d0bdcdea30eb2c2f7ae3dc5fa87a0f79f6",
+    "source": "src/assets/images/collection/hanho.webp",
+    "backup": "asset-backups/collection-originals/hanho.webp"
+  },
+  {
+    "name": "victrola",
+    "width": 2048,
+    "height": 1536,
+    "sha256": "947bc4dc19302675f05f1f8f1c7fed946b97383819e295320c67802727bdc3a1",
+    "source": "src/assets/images/collection/victrola.webp",
+    "backup": "asset-backups/collection-originals/victrola.webp"
+  },
+  {
+    "name": "ryu-sunjeong",
+    "width": 874,
+    "height": 1200,
+    "sha256": "d211251d204fc1a268935d6ba97f123d0446fde3e37344294cafcb1a19af6622",
+    "source": "src/assets/images/collection/ryu-sunjeong.webp",
+    "backup": "asset-backups/collection-originals/ryu-sunjeong.webp"
+  },
+  {
+    "name": "ryu-hong",
+    "width": 862,
+    "height": 1200,
+    "sha256": "06d6628db9bb46e3b44197a080b92cb8eb27b867e3fde285e2c911a06961b465",
+    "source": "src/assets/images/collection/ryu-hong.webp",
+    "backup": "asset-backups/collection-originals/ryu-hong.webp"
+  },
+  {
+    "name": "landscape-jar",
+    "width": 2048,
+    "height": 1536,
+    "sha256": "d461ee1538ea9a70d9eb60774d78759dda57825a3906a9c8294e13e6e766bbf5",
+    "source": "src/assets/images/collection/landscape-jar.webp",
+    "backup": "asset-backups/collection-originals/landscape-jar.webp"
+  },
+  {
+    "name": "military-chest",
+    "width": 2047,
+    "height": 1536,
+    "sha256": "dda850066c3c5a6b175cbf49512a5dcf33e1be5296932c3696debeda3f534b5b",
+    "source": "src/assets/images/collection/military-chest.webp",
+    "backup": "asset-backups/collection-originals/military-chest.webp"
+  },
+  {
+    "name": "copper-jar",
+    "width": 2048,
+    "height": 1536,
+    "sha256": "6ee9d93d4029a57ede94df6744080cc537984a5e0b8b9047fae6f5e4303270cf",
+    "source": "src/assets/images/collection/copper-jar.webp",
+    "backup": "asset-backups/collection-originals/copper-jar.webp"
+  },
+  {
+    "name": "surangama",
+    "width": 4852,
+    "height": 3639,
+    "sha256": "3f9deaecf69d9c7483ee8de4cd1bf5199027c92d98c92942ac0f0a54e906ea53",
+    "source": "src/assets/images/collection/surangama.webp",
+    "backup": "asset-backups/collection-originals/surangama.webp"
+  }
+]

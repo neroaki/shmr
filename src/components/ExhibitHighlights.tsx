@@ -19,11 +19,23 @@ export function ExhibitHighlights() {
     const sequence = sequenceRef.current!
     const scene = sceneRef.current!
     const stage = stageRef.current!
+    const viewport = stage.querySelector<HTMLElement>('.highlights-viewport')!
     const toolbar = toolbarRef.current!
     const header = document.querySelector<HTMLElement>('.site-header')!
     const panels = [...stage.querySelectorAll<HTMLElement>('.highlights-panel')]
+    const overview = panels[0]
+    const heading = overview.querySelector<HTMLElement>('h2')!
+    const overviewCopy = overview.querySelector<HTMLElement>('.highlights-overview-copy')!
+    const indexList = overview.querySelector<HTMLElement>('.highlights-index')!
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
     let width = 1
+    let railWidth = 1
+    let railPadding = 1
+    let indexInset = 1
+    let expandedCopyWidth = 1
+    let expandedIndexWidth = 1
+    let expandedHeadingSize = 1
+    let dockedHeadingSize = 1
     let headerHeight = 0
     let frame = 0
     let disposed = false
@@ -39,13 +51,35 @@ export function ExhibitHighlights() {
       const progress = reducedMotion.matches ? Math.round(left / width) : left / width
       active = Math.min(panels.length - 1, Math.round(progress))
       scene.style.transform = `translateY(${offset}px)`
+      // The overview itself becomes the persistent left rail as the first object enters.
+      const dock = clamp(progress)
+      // A small overlap covers subpixel seams between the rail and incoming panel.
+      const overviewWidth = Math.ceil(stage.clientWidth - dock * width) + 2
+      overview.style.width = `${overviewWidth}px`
+      heading.style.fontSize = `${expandedHeadingSize + (dockedHeadingSize - expandedHeadingSize) * dock}px`
+      overviewCopy.style.width = `${expandedCopyWidth + (Math.ceil(railWidth) + 2 - railPadding * 2 - expandedCopyWidth) * dock}px`
+      overviewCopy.style.setProperty('--overview-copy-dock', String(dock))
+      indexList.style.width = `${expandedIndexWidth + (Math.ceil(railWidth) + 2 - railPadding - indexInset - expandedIndexWidth) * dock}px`
+      indexList.style.setProperty('--highlights-index-font-size', `${18 - 3 * dock}px`)
+      indexList.style.setProperty('--highlights-index-row-padding', `${8 - 3 * dock}px`)
+      indexList.style.setProperty('--highlights-index-meta-height', `${16 * (1 - dock)}px`)
+      indexList.style.setProperty('--highlights-index-meta-opacity', String(1 - dock))
+      const indexHeight = indexList.offsetHeight
+      const bottomPosition = stage.clientHeight - railPadding - indexHeight
+      const listStart = heading.offsetTop + heading.offsetHeight + 24
+      const listEnd = overviewCopy.offsetTop - 28
+      const centeredPosition = Math.max(listStart, (listStart + listEnd - indexHeight) / 2)
+      indexList.style.transform = `translateY(${(centeredPosition - bottomPosition) * dock}px)`
       panels.forEach((panel, index) => {
-        // Each new section covers the preceding one. The old section only recedes 10%.
-        const entering = index === 0 ? 0 : 100 * (1 - clamp(progress - index + 1))
-        const receding = -10 * clamp(progress - index)
-        panel.style.transform = `translateX(${entering + receding}%)`
-        panel.inert = index !== active
-        panel.setAttribute('aria-hidden', String(index !== active))
+        if (index > 0) {
+          // Exhibit panels stack only inside the right viewport; they never cross the rail.
+          const entering = 100 * (1 - clamp(progress - index + 1))
+          const receding = -10 * clamp(progress - index)
+          panel.style.transform = `translateX(${entering + receding}%)`
+        }
+        // The docked list stays available for direct navigation between objects.
+        panel.inert = index > 0 && index !== active
+        panel.setAttribute('aria-hidden', String(index > 0 && index !== active))
       })
       countRef.current!.textContent = active === 0 ? `총 ${highlights.length}점` : `${String(active).padStart(2, '0')} / ${String(highlights.length).padStart(2, '0')}`
       countRef.current!.setAttribute('aria-label', active === 0 ? `전시품 ${highlights.length}점` : `전시품 ${highlights.length}개 중 ${active}번째`)
@@ -59,7 +93,17 @@ export function ExhibitHighlights() {
       sequence.style.setProperty('--highlights-top', `${headerHeight}px`)
       sequence.style.setProperty('--highlights-toolbar-height', `${toolbar.getBoundingClientRect().height}px`)
       const available = innerHeight - headerHeight
-      width = stage.clientWidth
+      width = viewport.clientWidth
+      railWidth = stage.clientWidth - width
+      railPadding = parseFloat(getComputedStyle(overview).paddingLeft)
+      indexInset = parseFloat(getComputedStyle(indexList).right)
+      overviewCopy.style.removeProperty('width')
+      expandedCopyWidth = overviewCopy.offsetWidth
+      expandedIndexWidth = Math.min(stage.clientWidth * .45, 42 * parseFloat(getComputedStyle(document.documentElement).fontSize))
+      heading.style.removeProperty('font-size')
+      expandedHeadingSize = parseFloat(getComputedStyle(heading).fontSize)
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
+      dockedHeadingSize = Math.min(4.5 * rem, Math.max(2.625 * rem, innerWidth * .036))
       motion = createHighlightsScroll((panels.length - 1) * width, available)
       // The overview and all objects always share one horizontal stack, at every size.
       sequence.dataset.pinned = 'true'
@@ -83,6 +127,7 @@ export function ExhibitHighlights() {
     }
     const resetTarget = () => { buttonTarget = null }
     const revealFocus = (event: FocusEvent) => {
+      if (indexList.contains(event.target as Node)) return
       const panel = (event.target as HTMLElement).closest<HTMLElement>('.highlights-panel')
       if (!panel) return
       // Keyboard focus must reveal the complete section, even mid-transition.
@@ -94,6 +139,7 @@ export function ExhibitHighlights() {
     const observer = new ResizeObserver(measure)
     observer.observe(scene)
     observer.observe(stage)
+    observer.observe(viewport)
     observer.observe(toolbar)
     observer.observe(header)
     stage.addEventListener('focusin', revealFocus)
@@ -141,13 +187,11 @@ export function ExhibitHighlights() {
             <header className="highlights-panel highlights-overview" style={{ '--exhibit-layer': 0 } as CSSProperties}>
               <div className="highlights-overview-heading">
                 <h2 id="highlights-title" tabIndex={-1}>주요 전시품</h2>
-                <span className="section-index">(01)</span>
               </div>
               <div className="highlights-overview-body">
                 <div className="highlights-overview-copy">
-                  <p>지도와 책, 거리와 집에서<br />서울의 변화를 살펴보세요</p>
-                  <p>한양의 지도를 시작으로 새로운 문물을 담은 책과 교통, 주거와 올림픽의 기록까지 여섯 점을 소개합니다</p>
-                  <a className="text-link" href="#exhibitions">기획전시·프로그램으로 이동 <span aria-hidden="true">↓</span></a>
+                  <p>지도와 책, 도시의 기록에서<br />서울의 변화를 살펴보세요</p>
+                  <p>한양의 지도와 새로운 문물을 담은 책, 전차 안내서와 올림픽 성화봉까지 네 점을 소개합니다</p>
                 </div>
                 <ol className="highlights-index" aria-label="주요 전시품 목록">
                   {highlights.map((item, index) => (
@@ -163,30 +207,29 @@ export function ExhibitHighlights() {
               </div>
             </header>
 
-            {highlights.map((item, index) => (
+            <div className="highlights-viewport">
+              {highlights.map((item, index) => (
               <section className="highlights-panel exhibit-panel" id={`exhibit-${item.id}`} aria-labelledby={`exhibit-title-${item.id}`} key={item.id} style={{
                 '--exhibit-image-width': `${item.displayWidth}px`,
                 '--exhibit-image-height': `${item.displayWidth * item.height / item.width}px`,
                 '--exhibit-image-ratio': `${item.width} / ${item.height}`,
                 '--exhibit-layer': index + 1,
               } as CSSProperties}>
-                <header className="exhibit-panel-heading">
-                  <h3 id={`exhibit-title-${item.id}`} tabIndex={-1}>{item.title}</h3>
-                  <span>({item.number})</span>
-                </header>
                 <div className="exhibit-panel-body">
                   <div className="exhibit-panel-image">
-                    <img className={`image-tone--${item.tone}`} src={item.image} alt={item.alt} width={item.width} height={item.height} loading="lazy" decoding="async" />
+                    <img src={item.image} alt={item.alt} width={item.width} height={item.height} loading="lazy" decoding="async" />
                   </div>
                   <div className="exhibit-panel-copy">
                     <p className="eyebrow">{item.category}</p>
+                    <h3 id={`exhibit-title-${item.id}`} tabIndex={-1}>{item.title}</h3>
                     <p className="exhibit-panel-description">{item.description}</p>
                     <p className="exhibit-panel-credit">서울역사박물관 제공</p>
                     <a className="text-link" href={item.source} aria-label={`${item.title} 공식 전시물 설명 보기`}>전시물 설명 보기 <span aria-hidden="true">↗</span></a>
                   </div>
                 </div>
               </section>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>

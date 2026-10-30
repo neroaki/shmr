@@ -1,6 +1,6 @@
 .hero {
   position: relative;
-  min-height: calc(100svh - var(--page-gutter) - 2px);
+  min-height: calc(100svh - var(--page-gutter));
   display: flex; flex-direction: column;
   // No containing-block transform/container: the same image can fill the viewport.
 }
@@ -46,13 +46,25 @@
   font-size: 9.95vw; font-weight: var(--masthead-weight); line-height: var(--masthead-line-height);
   white-space: nowrap; letter-spacing: var(--masthead-letter-spacing);
   transform-origin: center; pointer-events: none;
-  > span { display: inline-block; }
+  > span { display: inline-block; flex-shrink: 0; }
 }
-.hero-title-highlight { position: relative; padding-inline: .05em; }
-.hero-title-highlight-inverse {
-  position: absolute; inset: 0; display: block; padding-inline: .05em;
-  color: var(--color-background); background: var(--color-text);
+.hero-word-ink { display: block; }
+[data-hero-word='seoul'] { position: relative; z-index: 2; }
+.hero-title .hero-title-highlight {
+  position: relative; display: inline-flex;
+  background: var(--color-text); clip-path: inset(0);
+}
+.hero-museum-letter {
+  display: block;
+  color: var(--color-background);
   clip-path: inset(0);
+  &:first-child { padding-left: .05em; }
+  &:last-child { padding-right: .05em; }
+}
+.hero:not([data-intro='settled']) {
+  .hero-word-ink { opacity: 0; }
+  .hero-title-highlight { clip-path: inset(0 100% 0 0); }
+  .hero-museum-letter { clip-path: inset(0 100% 0 0); }
 }
 .hero-baseline {
   display: flex; justify-content: space-between; gap: 1rem;
@@ -65,7 +77,6 @@
   .hero-title, .hero-meta, .hero-notes, .hero-baseline { opacity: 0; }
 }
 .hero[data-intro='playing'] {
-  .hero-title { text-shadow: 0 1px 20px #00000030; }
   .hero-meta, .hero-notes, .hero-baseline { pointer-events: none; }
 }
 @media (max-width: 1100px) {
@@ -76,5 +87,8 @@
   .hero[data-intro='preparing'] {
     .hero-photo { position: absolute; }
     .hero-title, .hero-meta, .hero-notes, .hero-baseline { opacity: 1; }
+    .hero-word-ink { opacity: 1; }
+    .hero-title-highlight { clip-path: inset(0); }
+    .hero-museum-letter { clip-path: inset(0); }
   }
 }

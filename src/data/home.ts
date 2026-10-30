@@ -11,12 +11,10 @@ import archivePhoto from '../assets/images/archive-photo.webp'
 import archiveCity from '../assets/images/archive-city-dongjak.jpg'
 import archiveExcavation from '../assets/images/archive-excavation.webp'
 import archiveLife from '../assets/images/archive-life.webp'
-import cityMap from '../assets/images/doseong-daegido.jpg'
-import tram from '../assets/images/tram-381.jpg'
-import apartment from '../assets/images/seocho-samho-apartment.jpg'
-import seoyu from '../assets/images/seoyu-gyeonmun.jpg'
-import tramGuide from '../assets/images/gyeongseong-tram-guide.jpg'
-import olympicTorch from '../assets/images/seoul-olympic-torch.jpg'
+import cityMap from '../assets/images/cutouts/doseong-daegido.png'
+import seoyu from '../assets/images/cutouts/seoyu-gyeonmun.png'
+import tramGuide from '../assets/images/cutouts/gyeongseong-tram-guide.png'
+import olympicTorch from '../assets/images/cutouts/seoul-olympic-torch.png'
 
 const museum = 'https://museum.seoul.go.kr'
 export const official = {
@@ -71,13 +69,13 @@ export const exhibitions = [
   },
 ]
 
-// Display caps preserve the original frame and avoid enlarging the 740px sources.
+// Original-pixel cutouts: only alpha and empty outer margins changed. Display at native size or smaller.
 export const highlights = [
   {
     id: 'doseong-map', number: '01', title: '도성대지도',
     category: '18세기 · 지도',
     description: '산과 성곽, 궁궐과 길이 한 화면에 담겨 있습니다. 오늘날에도 익숙한 장소를 옛 한양의 지도에서 찾아보세요.',
-    image: cityMap, tone: 'paper', width: 740, height: 711, displayWidth: 740,
+    image: cityMap, width: 680, height: 676, displayWidth: 578,
     alt: '산세와 도성 안팎의 길, 궁궐을 그린 도성대지도 전체 모습',
     source: `${museum}/www/board/NR_boardView.do?bbsCd=1182&seq=20221208151226671&sso=ok`,
   },
@@ -85,39 +83,23 @@ export const highlights = [
     id: 'seoyu-gyeonmun', number: '02', title: '서유견문',
     category: '개항기 · 서적',
     description: '유길준이 서양에서 접한 문물과 제도를 기록한 책입니다. 교육과 교통, 의료 등 새로운 사회를 구상하던 당시의 생각을 읽을 수 있습니다.',
-    image: seoyu, tone: 'paper', width: 740, height: 555, displayWidth: 740,
+    image: seoyu, width: 507, height: 387, displayWidth: 507,
     alt: '서문과 손글씨가 보이는 펼쳐진 서유견문',
     source: `${museum}/www/board/NR_boardView.do?bbsCd=1182&seq=20221212103738699&sso=ok`,
   },
   {
-    id: 'tram-381', number: '03', title: '전차 381호',
-    category: '1930–1968년 운행 · 야외전시',
-    description: '서울 거리를 실제로 달리던 전차입니다. 버스와 자동차가 거리를 채우기 전 서울의 이동 풍경을 보여줍니다.',
-    image: tram, tone: 'photo', width: 1600, height: 1067, displayWidth: 1200,
-    alt: '박물관 야외에 전시된 크림색과 초록색 차체의 전차 381호',
-    source: `${museum}/www/board/NR_boardView.do?bbsCd=1126&seq=20140421080000069&sso=ok`,
-  },
-  {
-    id: 'tram-guide', number: '04', title: '경성전차안내',
+    id: 'tram-guide', number: '03', title: '경성전차안내',
     category: '일제강점기 · 관광안내서',
     description: '전차와 버스 노선, 명소를 담은 접이식 안내서입니다. 당시의 도시 풍경과 함께 관광을 통해 식민 지배를 정당화하려던 시선도 담겨 있습니다.',
-    image: tramGuide, tone: 'paper', width: 740, height: 555, displayWidth: 740,
+    image: tramGuide, width: 650, height: 243, displayWidth: 650,
     alt: '경성의 전차 노선과 명소를 그림으로 나타낸 가로형 접이식 안내서',
     source: `${museum}/www/board/NR_boardView.do?bbsCd=1182&seq=20221212133847472&sso=ok`,
   },
   {
-    id: 'samho-apartment', number: '05', title: '서초삼호아파트',
-    category: '1980년대 생활 · 재현 전시',
-    description: '한 가족이 살던 집의 내장재와 기증 가구를 바탕으로 꾸린 공간입니다. 거실과 생활용품에서 당시의 아파트 생활을 살펴봅니다.',
-    image: apartment, tone: 'photo', width: 740, height: 555, displayWidth: 740,
-    alt: '소파, 텔레비전, 거실장과 생활용품을 배치한 서초삼호아파트 재현 전시',
-    source: `${museum}/www/board/NR_boardView.do?bbsCd=1182&seq=20221212151530130&sso=ok`,
-  },
-  {
-    id: 'olympic-torch', number: '06', title: '서울올림픽 성화봉',
+    id: 'olympic-torch', number: '04', title: '서울올림픽 성화봉',
     category: '1988 서울올림픽 · 성화봉',
     description: '1988년 서울올림픽을 상징하는 성화봉입니다. 올림픽을 준비하며 크게 달라진 서울의 모습과 도시가 세계에 알려진 순간을 돌아봅니다.',
-    image: olympicTorch, tone: 'object', width: 740, height: 578, displayWidth: 740,
+    image: olympicTorch, width: 94, height: 449, displayWidth: 94,
     alt: '서울올림픽 엠블럼과 오륜이 새겨진 금속 성화봉',
     source: `${museum}/www/board/NR_boardView.do?bbsCd=1182&seq=20221212151650918&sso=ok`,
   },

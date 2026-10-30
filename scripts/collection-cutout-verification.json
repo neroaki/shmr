@@ -1,0 +1,202 @@
+[
+  {
+    "name": "yeonggajip",
+    "sourceSize": [
+      2048,
+      1536
+    ],
+    "crop": [
+      677,
+      222,
+      1371,
+      1284
+    ],
+    "outputSize": [
+      694,
+      1062
+    ],
+    "sourcePixelVerification": "PASS: every cropped RGB sample unchanged; alpha only",
+    "encodedPixelVerification": "PASS: lossless WebP RGBA exact",
+    "bytes": 835532
+  },
+  {
+    "name": "hanho",
+    "sourceSize": [
+      1200,
+      901
+    ],
+    "crop": [
+      118,
+      113,
+      1085,
+      760
+    ],
+    "outputSize": [
+      967,
+      647
+    ],
+    "sourcePixelVerification": "PASS: every cropped RGB sample unchanged; alpha only",
+    "encodedPixelVerification": "PASS: lossless WebP RGBA exact",
+    "bytes": 1069258
+  },
+  {
+    "name": "ryu-sunjeong",
+    "sourceSize": [
+      874,
+      1200
+    ],
+    "crop": [
+      124,
+      0,
+      758,
+      1178
+    ],
+    "outputSize": [
+      634,
+      1178
+    ],
+    "sourcePixelVerification": "PASS: every cropped RGB sample unchanged; alpha only",
+    "encodedPixelVerification": "PASS: lossless WebP RGBA exact",
+    "bytes": 1089302
+  },
+  {
+    "name": "ryu-hong",
+    "sourceSize": [
+      862,
+      1200
+    ],
+    "crop": [
+      143,
+      0,
+      709,
+      1183
+    ],
+    "outputSize": [
+      566,
+      1183
+    ],
+    "sourcePixelVerification": "PASS: every cropped RGB sample unchanged; alpha only",
+    "encodedPixelVerification": "PASS: lossless WebP RGBA exact",
+    "bytes": 837260
+  },
+  {
+    "name": "landscape-jar",
+    "sourceSize": [
+      2048,
+      1536
+    ],
+    "crop": [
+      630,
+      291,
+      1414,
+      1314
+    ],
+    "outputSize": [
+      784,
+      1023
+    ],
+    "sourcePixelVerification": "PASS: every cropped RGB sample unchanged; alpha only",
+    "encodedPixelVerification": "PASS: lossless WebP RGBA exact",
+    "bytes": 569840
+  },
+  {
+    "name": "military-chest",
+    "sourceSize": [
+      2047,
+      1536
+    ],
+    "crop": [
+      357,
+      503,
+      1677,
+      1080
+    ],
+    "outputSize": [
+      1320,
+      577
+    ],
+    "sourcePixelVerification": "PASS: every cropped RGB sample unchanged; alpha only",
+    "encodedPixelVerification": "PASS: lossless WebP RGBA exact",
+    "bytes": 648194
+  },
+  {
+    "name": "copper-jar",
+    "sourceSize": [
+      2048,
+      1536
+    ],
+    "crop": [
+      625,
+      419,
+      1413,
+      1180
+    ],
+    "outputSize": [
+      788,
+      761
+    ],
+    "sourcePixelVerification": "PASS: every cropped RGB sample unchanged; alpha only",
+    "encodedPixelVerification": "PASS: lossless WebP RGBA exact",
+    "bytes": 442482
+  },
+  {
+    "name": "surangama",
+    "sourceSize": [
+      4852,
+      3639
+    ],
+    "crop": [
+      807,
+      651,
+      3943,
+      3043
+    ],
+    "outputSize": [
+      3136,
+      2392
+    ],
+    "sourcePixelVerification": "PASS: every cropped RGB sample unchanged; alpha only",
+    "encodedPixelVerification": "PASS: lossless WebP RGBA exact",
+    "bytes": 8494586
+  },
+  {
+    "name": "victrola",
+    "sourceSize": [
+      2048,
+      1536
+    ],
+    "crop": [
+      608,
+      283,
+      1515,
+      1363
+    ],
+    "outputSize": [
+      907,
+      1080
+    ],
+    "sourcePixelVerification": "PASS: every cropped RGB sample unchanged; alpha only",
+    "encodedPixelVerification": "PASS: lossless WebP RGBA exact",
+    "bytes": 631360
+  },
+  {
+    "name": "bulanggi",
+    "sourceSize": [
+      715,
+      496
+    ],
+    "crop": [
+      68,
+      111,
+      635,
+      418
+    ],
+    "outputSize": [
+      567,
+      307
+    ],
+    "sourcePixelVerification": "PASS: every cropped RGB sample unchanged; alpha only",
+    "encodedPixelVerification": "PASS: lossless WebP RGBA exact",
+    "bytes": 206236
+  }
+]
