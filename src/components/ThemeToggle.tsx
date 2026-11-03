@@ -5,15 +5,11 @@ type Theme = 'dark' | 'light'
 
 export function ThemeToggle() {
   const { t } = useLanguage()
-  const [theme, setTheme] = useState<Theme>(() => {
-    try { return localStorage.getItem('shm-theme') === 'dark' ? 'dark' : 'light' }
-    catch { return 'light' }
-  })
+  const [theme, setTheme] = useState<Theme>('light')
 
   useLayoutEffect(() => {
     document.documentElement.dataset.theme = theme
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'light' ? '#f5f2eb' : '#1c1c1c')
-    try { localStorage.setItem('shm-theme', theme) } catch { /* Switching works without storage. */ }
   }, [theme])
 
   return (
