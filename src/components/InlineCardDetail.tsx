@@ -1,3 +1,4 @@
+import './inline-card-detail.scss'
 import { useLanguage } from '../i18n/LanguageContext'
 import { useLayoutEffect, useRef } from 'react'
 import { useInlineCardDialog } from '../hooks/useInlineCardDialog'
@@ -19,36 +20,43 @@ interface Props {
 
 // Both galleries expand their existing card into this shared React detail surface.
 export function InlineCardDetail({ active, onClose, titleId, descriptionId, category, title, description, fields, notes = [], source, cta, credit }: Props) {
-  const { t, language } = useLanguage()
+  const { t } = useLanguage()
   const detailRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
-  const bodyRef = useRef<HTMLDivElement>(null)
-  const contentRef = useRef<HTMLDivElement>(null)
   useInlineCardDialog(active, detailRef, closeRef, onClose)
 
+  // Fit the complete text column together, preserving its role sizes and spacing ratios.
+  // Re-measure after locale/font changes and during the existing card expansion.
   useLayoutEffect(() => {
-    if (!active) return
-    const body = bodyRef.current!
-    const content = contentRef.current!
-    let frame = 0
+    const surface = detailRef.current
+    if (!active || !surface) return
+    const inner = surface.querySelector<HTMLElement>('.programme-detail-inner')!
     const fit = () => {
-      cancelAnimationFrame(frame)
-      frame = requestAnimationFrame(() => {
-        content.style.zoom = '1'
-        // Fit the full content, including the official link, without a nested scroll area.
-        for (let pass = 0; pass < 4; pass++) {
-          const height = content.getBoundingClientRect().height
-          if (height <= body.clientHeight || body.clientHeight < 80) break
-          const current = Number(content.style.zoom)
-          content.style.zoom = String(Math.max(.7, current * (body.clientHeight / height) * .98))
-        }
-      })
+      if (surface.clientWidth < 1 || surface.clientHeight < 1) return
+      let low = .25
+      let high = Math.min(1, surface.clientWidth / 360)
+      const apply = (scale: number) => {
+        surface.style.setProperty('--detail-fit', String(scale))
+        inner.style.width = `${(surface.clientWidth - 1) / scale}px`
+        inner.style.height = 'auto'
+      }
+      for (let i = 0; i < 9; i++) {
+        const scale = (low + high) / 2
+        apply(scale)
+        if (inner.getBoundingClientRect().height > surface.clientHeight - 2
+          || inner.scrollWidth > inner.clientWidth + 1) high = scale
+        else low = scale
+      }
+      apply(low)
+      inner.style.height = `${(surface.clientHeight - 2) / low}px`
     }
     const observer = new ResizeObserver(fit)
-    observer.observe(body)
+    observer.observe(surface)
     fit()
-    return () => { observer.disconnect(); cancelAnimationFrame(frame) }
-  }, [active, language])
+    let alive = true
+    void document.fonts.ready.then(() => { if (alive) fit() })
+    return () => { alive = false; observer.disconnect() }
+  }, [active, t, title, description])
 
   return <div ref={detailRef} className="programme-detail" aria-hidden={!active} inert={!active}>
     <div className="programme-detail-inner">
@@ -58,8 +66,8 @@ export function InlineCardDetail({ active, onClose, titleId, descriptionId, cate
           {t("닫기")} <span aria-hidden="true">×</span>
         </button>
       </div>
-      <div ref={bodyRef} className="programme-detail-body">
-        <div ref={contentRef} className="inline-detail-content">
+      <div className="programme-detail-body">
+        <div className="inline-detail-content">
           <h3 id={titleId} className="programme-detail-heading" data-dialog-heading tabIndex={-1}>{t(title)}</h3>
           <p id={descriptionId} className="programme-detail-description">{t(description)}</p>
           <dl>{fields.map(field => <div key={t(field.label)}><dt>{t(field.label)}</dt><dd>{t(field.value)}</dd></div>)}</dl>

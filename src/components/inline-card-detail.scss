@@ -1,0 +1,92 @@
+@use '../styles/typography' as type;
+
+.programme-detail {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 200ms ease, visibility 0s 850ms;
+  .is-open & { visibility: visible; opacity: 1; transition: opacity 450ms 300ms ease, visibility 0s; }
+}
+.programme-detail-inner {
+  --detail-top-space-scale: 1.5;
+  --detail-content-gap: clamp(1.5rem, 2.8svh, 3rem);
+  --detail-field-gap: .625rem;
+  // Text has a stable measure while the containing card unfolds horizontally.
+  width: 100%;
+  height: 100%;
+  padding: clamp(1.25rem, 2.6cqw, 3rem);
+  padding-top: calc(clamp(1.25rem, 2.6cqw, 3rem) * var(--detail-top-space-scale));
+  display: flex;
+  flex-direction: column;
+  transform: translateX(1.25rem);
+  transition: transform 850ms var(--programme-motion-ease);
+  .is-open & { transform: translateX(0); }
+}
+.programme-detail-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--color-muted);
+
+  margin-bottom: var(--detail-content-gap);
+}
+.programme-detail-heading:focus { outline: none; }
+
+.programme-detail-close {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .35rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--color-muted);
+  background: none;
+  color: var(--color-text);
+
+  &:hover { border-color: var(--color-text); }
+}
+.programme-detail-body {
+  user-select: text;
+  min-height: 0;
+  flex: 0 0 auto;
+  overflow: visible;
+
+  dl { margin: 0; display: grid; gap: var(--detail-field-gap); }
+  dl > div { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: .75rem; }
+  dt { color: var(--color-muted); }
+  .text-link { margin: 0; justify-self: start; }
+}
+.programme-detail-description { margin: 0; color: var(--color-muted); }
+.programme-detail-note { color: var(--color-muted); margin: 0; }
+.inline-detail-content { display: grid; gap: var(--detail-content-gap); }
+.programme-detail-credit { margin-top: auto; padding-top: 1rem; color: var(--color-muted);  }
+
+// Semantic typography: shared across sections and locales.
+.programme-detail-body h3 { @include type.role(content); }
+.programme-detail-description { @include type.role(body); }
+.programme-detail-top, .programme-detail-body dl, .programme-detail-note, .programme-detail-credit { @include type.role(meta); }
+.programme-detail-close, .programme-detail-body .text-link { @include type.role(ui); }
+
+// Short detail surfaces reduce spacing before the shared content-fit calculation.
+@media (max-height: 1000px) {
+  .programme-detail-inner {
+    --detail-block-padding: 1rem;
+    --detail-content-gap: 1.25rem;
+    --detail-field-gap: .5rem;
+    padding-block: calc(var(--detail-block-padding) * var(--detail-top-space-scale)) var(--detail-block-padding);
+  }
+  .programme-detail-body .text-link { min-height: 2.25rem; }
+  .programme-detail-credit { padding-top: .5rem; }
+}
+:root[lang='ja'] .programme-detail { word-break: normal; line-break: strict; }
+:root[lang='ja'] .programme-detail-body h3 { word-break: normal; }
+
+// The shared detail fits its actual width and height; source/CTA remain in normal flow.
+.programme-detail { height: 100%; }
+.programme-detail .programme-detail-inner {
+  zoom: var(--detail-fit, 1);
+
+}
+.programme-detail-credit { flex-shrink: 0; padding-top: var(--detail-content-gap); }

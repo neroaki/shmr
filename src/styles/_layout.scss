@@ -1,3 +1,5 @@
+@use 'typography' as type;
+
 .site-shell { width: var(--container-width); }
 .site-header {
   display: grid; grid-template-columns: 1fr 2fr; align-items: center;
@@ -8,15 +10,15 @@
   transition: opacity 280ms ease, transform 360ms cubic-bezier(.22, 1, .36, 1), visibility 280ms;
   &.is-visible { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
 }
-.site-brand { font-size: 1.125rem; font-weight: 300; width: fit-content; padding-block: .75rem; }
+.site-brand { width: fit-content; padding-block: .75rem; }
 .site-nav {
   display: flex; justify-content: space-between; gap: 1rem;
-  a { display: inline-flex; align-items: center; min-height: var(--button-height); font-size: var(--font-caption); white-space: nowrap; }
+  a { display: inline-flex; align-items: center; min-height: var(--button-height); white-space: nowrap; }
   a:hover { text-decoration: none; }
   a:hover .site-nav-label::after, a:focus-visible .site-nav-label::after { transform: scaleX(1); }
 }
 .site-nav-label {
-  position: relative; display: inline-flex; align-items: baseline; line-height: 1.25;
+  position: relative; display: inline-flex; align-items: baseline;
   &::after {
     content: ''; position: absolute; left: 0; right: 0; bottom: -.22em;
     border-bottom: 1px solid currentColor; transform: scaleX(0); transform-origin: left;
@@ -24,28 +26,28 @@
   }
 }
 .site-nav-number {
-  margin-left: .2rem; font-size: .625rem; line-height: 1; color: var(--color-muted);
+  margin-left: .2rem; color: var(--color-muted);
 }
 .menu-toggle { display: none; }
 .section { padding: var(--section-padding) var(--inner-gutter); }
 .section-heading {
   display: grid; grid-template-columns: 1fr 6fr 4fr; gap: var(--grid-gutter);
   align-items: start; margin-bottom: var(--section-gap);
-  h2 { font-size: var(--font-section); }
+
   p { color: var(--color-muted); }
 }
-.section-index { font-size: var(--font-caption); padding-top: .4rem; color: var(--color-muted); }
+.section-index { padding-top: .4rem; color: var(--color-muted); }
 .site-footer { padding: 3rem var(--inner-gutter); }
 .footer-top {
   display: flex; justify-content: space-between; gap: 2rem; margin-bottom: 5rem;
   nav { display: flex; flex-wrap: wrap; gap: .5rem 2rem; align-content: start; }
   nav a { min-height: var(--button-height); display: inline-flex; align-items: center; gap: .5rem; }
-  address { font-size: var(--font-caption); font-style: normal; color: var(--color-muted); }
+  address { font-style: normal; color: var(--color-muted); }
 }
-.footer-name { margin-bottom: 1rem; font-size: 1.25rem; }
+.footer-name { margin-bottom: 1rem; }
 .footer-bottom {
   display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: end; gap: 1.5rem; font-size: var(--font-caption); color: var(--color-muted);
+  align-items: end; gap: 1.5rem; color: var(--color-muted);
   > a { justify-self: end; }
 }
 .footer-logo {
@@ -60,21 +62,28 @@
 }
 @media (max-width: 767px) {
   .site-header { grid-template-columns: 1fr auto; }
-  .site-brand { font-size: 1rem; }
+
   .menu-toggle {
     display: flex; align-items: center; gap: 1rem; min-height: var(--button-height);
-    padding: 0; background: none; border: 0; font-size: var(--font-caption);
-    span { font-size: 1.25rem; }
+    padding: 0; background: none; border: 0;
+
   }
   .site-nav {
     display: none; grid-column: 1 / -1; padding-block: .5rem 1rem; border-top: 1px solid var(--color-border);
     &.is-open { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
   }
   .section-heading { grid-template-columns: auto 1fr; column-gap: 1rem; row-gap: 1rem; }
-  .section-heading h2 { font-size: 1.75rem; }
+
   .footer-top { margin-bottom: 3rem; }
-  .footer-top nav { gap: .5rem 1.5rem; font-size: var(--font-caption); }
+  .footer-top nav { gap: .5rem 1.5rem; }
   .footer-bottom { grid-template-columns: 1fr; align-items: start; }
   .footer-bottom > a { justify-self: start; }
   .footer-logo { grid-row: 3; }
 }
+
+// Semantic typography: shared across sections and locales.
+.site-brand, .footer-name { @include type.role(lead); }
+.site-nav a, .site-nav-label, .menu-toggle, .footer-top nav { @include type.role(ui); }
+.site-nav-number { @include type.role(ui); }
+.section-index, .footer-top address, .footer-bottom { @include type.role(meta); }
+.section-heading h2 { @include type.role(section); }

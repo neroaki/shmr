@@ -36,8 +36,7 @@ export function ExhibitHighlights() {
     let indexInset = 1
     let expandedCopyWidth = 1
     let expandedIndexWidth = 1
-    let expandedHeadingSize = 1
-    let dockedHeadingSize = 1
+
     let headerHeight = 0
     let frame = 0
     let disposed = false
@@ -58,13 +57,13 @@ export function ExhibitHighlights() {
       // A small overlap covers subpixel seams between the rail and incoming panel.
       const overviewWidth = Math.ceil(stage.clientWidth - dock * width) + 2
       overview.style.width = `${overviewWidth}px`
-      heading.style.fontSize = `${expandedHeadingSize + (dockedHeadingSize - expandedHeadingSize) * dock}px`
+
       overviewCopy.style.width = `${expandedCopyWidth + (Math.ceil(railWidth) + 2 - railPadding * 2 - expandedCopyWidth) * dock}px`
       overviewCopy.style.setProperty('--overview-copy-dock', String(dock))
       indexList.style.width = `${expandedIndexWidth + (Math.ceil(railWidth) + 2 - railPadding - indexInset - expandedIndexWidth) * dock}px`
-      indexList.style.setProperty('--highlights-index-font-size', `${26 - 3 * dock}px`)
+
       indexList.style.setProperty('--highlights-index-row-padding', `${8 - 3 * dock}px`)
-      indexList.style.setProperty('--highlights-index-meta-height', `${24 * (1 - dock)}px`)
+      indexList.style.setProperty('--highlights-index-meta-height', `${1 - dock}lh`)
       indexList.style.setProperty('--highlights-index-meta-opacity', String(1 - dock))
       const indexHeight = indexList.offsetHeight
       const bottomPosition = stage.clientHeight - railPadding - indexHeight
@@ -83,10 +82,13 @@ export function ExhibitHighlights() {
         panel.inert = index > 0 && index !== active
         panel.setAttribute('aria-hidden', String(index > 0 && index !== active))
       })
-      countRef.current!.textContent = active === 0 ? `${t('전체')} ${highlights.length}${t('점')}` : `${String(active).padStart(2, '0')} / ${String(highlights.length).padStart(2, '0')}`
-      countRef.current!.setAttribute('aria-label', active === 0 ? `${t('전시품')} ${highlights.length}${t('점')}` : `${t('전시품')} ${active} / ${highlights.length}`)
-      previousRef.current!.disabled = left <= 1
-      nextRef.current!.disabled = left >= (panels.length - 1) * width - 1
+      // The toolbar controls are temporarily commented out below.
+      if (countRef.current) {
+        countRef.current.textContent = active === 0 ? `${t('전체')} ${highlights.length}${t('점')}` : `${String(active).padStart(2, '0')} / ${String(highlights.length).padStart(2, '0')}`
+        countRef.current.setAttribute('aria-label', active === 0 ? `${t('전시품')} ${highlights.length}${t('점')}` : `${t('전시품')} ${active} / ${highlights.length}`)
+      }
+      if (previousRef.current) previousRef.current.disabled = left <= 1
+      if (nextRef.current) nextRef.current.disabled = left >= (panels.length - 1) * width - 1
     }
     const schedule = () => { if (!frame) frame = requestAnimationFrame(sync) }
     const measure = () => {
@@ -102,10 +104,7 @@ export function ExhibitHighlights() {
       overviewCopy.style.removeProperty('width')
       expandedCopyWidth = overviewCopy.offsetWidth
       expandedIndexWidth = Math.min(stage.clientWidth * .45, 42 * parseFloat(getComputedStyle(document.documentElement).fontSize))
-      heading.style.removeProperty('font-size')
-      expandedHeadingSize = parseFloat(getComputedStyle(heading).fontSize)
-      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
-      dockedHeadingSize = Math.min(4.5 * rem, Math.max(2.625 * rem, innerWidth * .036)) * .7
+
       motion = createHighlightsScroll((panels.length - 1) * width, available)
       // The overview and all objects always share one horizontal stack, at every size.
       sequence.dataset.pinned = 'true'
@@ -174,6 +173,7 @@ export function ExhibitHighlights() {
       <div className="highlights-sequence" ref={sequenceRef}>
         <div className="highlights-scene" ref={sceneRef}>
           <div className="highlights-toolbar" ref={toolbarRef}>
+            {/* Controls retained for restoration; the toolbar preserves the title's position.
             <div className="highlights-navigation">
               <span className="highlights-count" ref={countRef}>{t('전체')} {highlights.length}{t('점')}</span>
               <button className="highlights-list-button" type="button" aria-label={t("주요 전시품 목록으로 돌아가기")} onClick={event => goToRef.current(0, event.detail === 0)}>{t("목록")} <span aria-hidden="true">↖</span></button>
@@ -183,6 +183,7 @@ export function ExhibitHighlights() {
               </div>
               <a className="highlights-skip" href="#exhibitions">{t("기획전시·프로그램으로 이동")} <span aria-hidden="true">↓</span></a>
             </div>
+            */}
           </div>
           <div className="highlights-stage" ref={stageRef}>
             <header className="highlights-panel highlights-overview" style={{ '--exhibit-layer': 0 } as CSSProperties}>

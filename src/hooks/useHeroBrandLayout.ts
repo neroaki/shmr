@@ -37,7 +37,9 @@ export function useHeroBrandLayout(ref: RefObject<HTMLElement | null>, label: st
     observer.observe(title)
     observer.observe(history)
     align()
+    const frame = requestAnimationFrame(align)
+    document.fonts.addEventListener('loadingdone', align)
     void document.fonts.ready.then(() => { if (alive) align() })
-    return () => { alive = false; observer.disconnect() }
+    return () => { alive = false; cancelAnimationFrame(frame); document.fonts.removeEventListener('loadingdone', align); observer.disconnect() }
   }, [ref, label])
 }

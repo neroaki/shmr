@@ -1,3 +1,5 @@
+@use '../styles/typography' as type;
+
 .archive {
   position: relative;
   height: calc(100svh - var(--header-height) + 240px);
@@ -17,7 +19,11 @@
 }
 .archive-composition {
   position: absolute;
-  inset: clamp(24px, 4svh, 96px) 8%;
+  left: 50%; top: 50%;
+  width: min(84%, calc((100svh - var(--header-height) - 8svh) * 1.75));
+  aspect-ratio: 1.75;
+  translate: -50% -50%;
+  container-type: size;
   --tile-width: calc((100% - 4 * var(--archive-gap)) / 5);
   --tile-height: calc((100% - 2 * var(--archive-gap)) / 3);
   --archive-copy-inset: clamp(14px, 1.6vw, 56px);
@@ -30,9 +36,9 @@
   height: calc(2 * var(--tile-height) + var(--archive-gap));
   z-index: 3;
   pointer-events: none;
-  .eyebrow { font-size: var(--font-hero-caption); letter-spacing: .05em; }
-  h2 { font-size: clamp(2.16rem, 3.024vw, 5.94rem); font-weight: 300; letter-spacing: -.015em; margin-top: 1rem; line-height: 1.2; white-space: nowrap; }
-  .archive-theme { margin-top: 1.5rem; font-size: clamp(.875rem, 1.05vw, 1.75rem); white-space: nowrap; }
+
+  h2 { margin-top: 1rem; white-space: nowrap; }
+  .archive-theme { margin-top: 1.5rem; white-space: nowrap; }
   .archive-copy-heading {
     position: absolute; inset: 0 auto auto 0;
     width: calc((100% - var(--archive-gap)) / 2);
@@ -44,28 +50,41 @@
 .archive-intro-more {
   position: absolute; left: 0; right: 0; bottom: 0;
   height: calc((100% - var(--archive-gap)) / 2);
-  display: grid; grid-template-columns: 1fr 1fr; gap: var(--archive-gap);
+  display: grid; grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 1.2cqw 2cqw;
+  padding: var(--archive-copy-inset);
+  align-items: start;
+  align-content: center;
   pointer-events: auto;
 }
 .archive-copy-summary, .archive-copy-links {
-  display: flex; flex-direction: column; justify-content: center; align-items: center;
-  gap: clamp(18px, 2.4svh, 44px); min-width: 0; padding: var(--archive-copy-inset);
+  display: contents;
   > * { max-width: 100%; }
 }
-.archive-copy-summary { text-align: center; }
-.archive-copy-links .archive-cta { justify-content: center; gap: .35em; }
-.archive-summary { color: var(--color-text); font-size: clamp(.8125rem, .95vw, 1.5rem); line-height: 1.8; word-break: keep-all; }
+.archive-copy-links {
+  grid-area: 1 / 2 / 3 / 3;
+  display: grid;
+  grid-template-rows: subgrid;
+  width: max-content;
+  max-width: 100%;
+  justify-self: center;
+  text-align: left;
+}
+.archive-summary { grid-area: 1 / 1; color: var(--color-text); word-break: keep-all; text-wrap: pretty; }
 .archive-groups {
-  font-size: clamp(.625rem, .72vw, 1.15rem); line-height: 1.5;
-  div { display: flex; flex-wrap: wrap; gap: 0 .7em; padding-bottom: .35em; }
+  grid-area: 1 / 1;
+  div { display: grid; grid-template-columns: auto 1fr; gap: .7em; padding-bottom: .6em; }
+  dt, dd { white-space: nowrap; }
   dd { color: var(--color-muted); }
 }
-.archive-selection-note { margin-top: 0; font-size: clamp(.625rem, .68vw, 1.1rem); color: var(--color-muted); line-height: 1.7; }
+.archive-selection-note { grid-area: 2 / 1; margin-top: 0; color: var(--color-muted); word-break: keep-all; text-wrap: pretty; }
+.archive-copy-links .archive-cta { grid-area: 2 / 1; align-self: end; justify-self: start; gap: .35em; }
 .archive-cta {
   display: inline-flex; align-items: baseline; gap: .35em;
   min-height: 2.5rem; padding: .5rem 0 .2rem; border-bottom: 1px solid currentColor;
   color: var(--color-text); white-space: nowrap;
-  font-size: clamp(.8125rem, .95vw, 1.5rem); text-decoration: none;
+   text-decoration: none;
   &:hover { color: var(--color-muted); text-decoration: none; }
 }
 .archive-grid-wrap { position: absolute; inset: 0; }
@@ -80,27 +99,34 @@
   width: var(--tile-width); height: calc(var(--row-span) * var(--tile-height) + (var(--row-span) - 1) * var(--archive-gap));
   z-index: 1; overflow: hidden; background: var(--color-surface);
   border-radius: 0;
-  transition: left 800ms var(--archive-ease), top 800ms var(--archive-ease), width 800ms var(--archive-ease), height 800ms var(--archive-ease), filter 500ms ease;
+  transform-origin: center;
+  scale: 1;
+  transition: left 800ms var(--archive-ease), top 800ms var(--archive-ease), width 800ms var(--archive-ease), height 800ms var(--archive-ease), scale 800ms var(--archive-ease), filter 500ms ease;
   &.is-previewing { z-index: 2; }
-  .has-selection &:not(.is-open) { filter: brightness(.32); pointer-events: none; }
-  &.is-open { background: var(--color-surface); z-index: 5; left: 6%; top: 8%; width: 88%; height: 84%; box-shadow: 0 12px 26px #00000024; }
-  .programme-detail-inner { width: 39.6cqw; padding: clamp(1.5rem, 3cqw, 4rem); }
-  .programme-detail-body h3 { font-size: clamp(1.5rem, 2.4cqw, 3rem); word-break: keep-all; overflow-wrap: anywhere; }
-  .programme-detail-description { font-size: clamp(.875rem, 1.1cqw, 1.25rem); }
-  .programme-detail-top, .programme-detail-body dl, .programme-detail-credit { font-size: clamp(.6875rem, .85cqw, 1rem); }
+  .has-selection &:not(.is-open) { pointer-events: none; }
+  // Preserve the desktop footprint; narrow grids receive more usable detail space.
+  &.is-open { background: var(--color-surface); z-index: 5; left: 14.8%; top: 16.4%; width: 70.4%; height: 67.2%; box-shadow: 0 12px 26px #00000024; }
+  .programme-detail-inner {
+    width: 100%;
+    padding: var(--detail-block-padding, clamp(1.2rem, 2.4cqw, 3.2rem)) clamp(1.2rem, 2.4cqw, 3.2rem);
+    padding-top: calc(var(--detail-block-padding, clamp(1.2rem, 2.4cqw, 3.2rem)) * var(--detail-top-space-scale));
+  }
+  .programme-detail-body h3 { word-break: keep-all; overflow-wrap: anywhere; }
+
 }
 .collection-card-image {
   position: relative; flex: 0 0 100%; width: 100%; min-width: 0; height: 100%;
   border: 0; padding: clamp(18px, 1.8vw, 60px); background: transparent; color: var(--color-text);
   transition: flex-basis 800ms var(--archive-ease), width 800ms var(--archive-ease);
-  .is-open & { flex-basis: 55%; width: 55%; cursor: default; }
-  img { display: block; width: 100%; height: 100%; object-fit: contain; -webkit-user-drag: none; transform-origin: 50% 55%; }
+  .is-open & { flex-basis: 45%; width: 45%; cursor: default; }
+  img { display: block; width: 100%; height: 100%; object-fit: contain; -webkit-user-drag: none; transform-origin: center; scale: .9; transition: scale 800ms var(--archive-ease); }
+  .is-open & img { scale: .8; }
 
 }
 .collection-card-caption {
   position: absolute; inset: auto 0 0; display: flex; justify-content: space-between; gap: .5rem;
   padding: 1.5rem .75rem .6rem; background: linear-gradient(transparent, var(--color-caption-shade));
-  font-size: clamp(.6875rem, .9vw, 1rem); line-height: 1.3; opacity: 0; transition: opacity 200ms ease;
+    opacity: 0; transition: opacity 200ms ease;
   .is-previewing &, .collection-card-image:focus-visible & { opacity: 1; }
   .is-open & { opacity: 0; }
 }
@@ -109,7 +135,7 @@
   .archive-composition { --archive-copy-inset: clamp(12px, 1.2vw, 24px); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .collection-card, .collection-card-image { transition: none; }
+  .collection-card, .collection-card-image, .collection-card-image img { transition: none; }
 }
 
 // The complete layout stays visible; only its common wrapper settles into place.
@@ -130,4 +156,45 @@
     opacity: 1;
     transform: none;
   }
+}
+
+// Semantic typography: shared across sections and locales.
+.archive-intro h2 { @include type.role(section); }
+.archive-theme { @include type.role(lead); }
+.archive-summary { @include type.role(body); }
+.archive-intro .eyebrow, .archive-groups, .archive-selection-note, .collection-card-caption { @include type.role(meta); }
+.archive-cta { @include type.role(ui); }
+
+// Scale the composed grid as a unit instead of stretching three rows to any viewport height.
+.archive-intro {
+  --type-section-size: clamp(1.5rem, 3.43cqw, 3rem);
+  --type-lead-size: clamp(.75rem, 1.45cqw, 1.125rem);
+  --type-body-size: clamp(.6875rem, 1.3cqw, 1rem);
+  --type-meta-size: clamp(.625rem, 1cqw, .75rem);
+  --type-ui-size: clamp(.75rem, 1.15cqw, .875rem);
+  --archive-copy-inset: .8cqw;
+  h2 { margin-top: 1cqw; }
+  .archive-theme { margin-top: 1.5cqw; white-space: normal; }
+  .archive-copy-summary, .archive-copy-links { gap: 1.2cqw; }
+}
+
+@container (max-width: 1100px) {
+  .archive-copy-links { display: contents; }
+  .collection-card.is-open { left: 3%; top: 0; width: 94%; height: 100%; }
+  .archive-cta { min-height: 0; padding-block: .2em; }
+  .archive-intro-more {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto auto;
+    gap: 1.3cqw 1cqw;
+    padding-block: .3cqw;
+  }
+  .archive-summary { grid-area: 1 / 1 / 2 / -1; }
+  .archive-groups {
+    grid-area: 2 / 1 / 3 / -1;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .7cqw;
+    div { display: flex; flex-direction: column; gap: .2em; padding: 0; }
+    dd { white-space: normal; word-break: keep-all; }
+  }
+  .archive-selection-note { grid-area: 3 / 1; }
+  .archive-copy-links .archive-cta { grid-area: 3 / 2; }
 }

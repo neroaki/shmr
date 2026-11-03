@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, type RefObject, type KeyboardEvent } from 'react'
 import { lockPageScroll } from '../lib/page-scroll'
+import { mountInlineModalBackdrop } from '../lib/inline-modal-backdrop'
 
 // Shared modal scope; background remains inert while outside clicks dismiss safely.
 export function useInlineCardDialog(active: boolean, detailRef: RefObject<HTMLDivElement | null>, closeRef: RefObject<HTMLButtonElement | null>, onClose: () => void) {
@@ -9,7 +10,8 @@ export function useInlineCardDialog(active: boolean, detailRef: RefObject<HTMLDi
     if (!active) return
     const card = detailRef.current!.closest<HTMLElement>('[data-inline-card]')!
     const trigger = card.querySelector<HTMLButtonElement>('[data-card-trigger]')!
-    const unlock = lockPageScroll()
+    const surface = card.querySelector<HTMLElement>('.programme-card-surface') ?? card
+    const unlock = lockPageScroll(card.closest<HTMLElement>('.archive, .programme'))
     const previous: { element: HTMLElement; inert: boolean }[] = []
     let branch: HTMLElement = card
     while (branch.parentElement && branch !== document.body) {
@@ -21,13 +23,14 @@ export function useInlineCardDialog(active: boolean, detailRef: RefObject<HTMLDi
       }
       branch = branch.parentElement
     }
+    const removeBackdrop = mountInlineModalBackdrop(surface)
     // Start at the content heading, without painting a button focus ring on entry.
     // Keyboard navigation still exposes the normal focus-visible control outline.
     const heading = detailRef.current?.querySelector<HTMLElement>('[data-dialog-heading]')
     ;(heading ?? closeRef.current)?.focus({ preventScroll: true })
     let outsidePress = false
     const outside = (event: MouseEvent) => {
-      const rect = card.getBoundingClientRect()
+      const rect = surface.getBoundingClientRect()
       return event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom
     }
     const down = (event: PointerEvent) => { outsidePress = event.button === 0 && outside(event) }
@@ -50,6 +53,7 @@ export function useInlineCardDialog(active: boolean, detailRef: RefObject<HTMLDi
     document.addEventListener('pointerdown', down, true)
     document.addEventListener('click', click, true)
     return () => {
+      removeBackdrop()
       document.removeEventListener('keydown', keydown, true)
       document.removeEventListener('pointerdown', down, true)
       document.removeEventListener('click', click, true)

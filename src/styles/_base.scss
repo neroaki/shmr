@@ -1,6 +1,24 @@
+@use 'typography' as type;
+
 @font-face {
   font-family: 'SUITE';
   src: url('../assets/fonts/SUITE-Light.otf') format('opentype');
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('../assets/fonts/PretendardVariable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Noto Sans JP';
+  src: url('../assets/fonts/NotoSansJP-Light.woff2') format('woff2');
   font-style: normal;
   font-weight: 300;
   font-display: swap;
@@ -17,18 +35,16 @@ body {
   padding: var(--page-gutter);
   background: var(--color-background);
   color: var(--color-text);
-  font-family: var(--font-family);
-  font-size: var(--font-body);
-  font-weight: var(--font-weight-body);
-  line-height: var(--line-body);
-  letter-spacing: var(--letter-spacing);
+  @include type.role(body);
+  font-synthesis: none;
   -webkit-font-smoothing: antialiased;
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
 h1, h2, h3, p, figure, dl, dd { margin: 0; }
-h2, h3 { font-weight: var(--font-weight-title); line-height: var(--line-heading); }
-strong, b { font-weight: 300; }
+h2 { @include type.role(section); }
+h3 { @include type.role(content); }
+strong, b { font-weight: var(--type-weight); }
 ul { list-style: none; margin: 0; padding: 0; }
 img { display: block; max-width: 100%; height: auto; }
 a { color: inherit; text-decoration: none; text-underline-offset: .3em; }
@@ -38,7 +54,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 a:focus-visible, button:focus-visible { outline: 2px solid var(--color-text); outline-offset: 5px; }
 main:focus { outline: none; }
 ::selection { background: var(--color-text); color: var(--color-background); }
-figcaption { margin-top: var(--caption-gap); color: var(--color-muted); font-size: var(--font-caption); line-height: 1.5; }
+figcaption { margin-top: var(--caption-gap); color: var(--color-muted); @include type.role(meta); }
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
@@ -52,19 +68,31 @@ figcaption { margin-top: var(--caption-gap); color: var(--color-muted); font-siz
 .text-link {
   display: inline-flex; gap: 2rem; align-items: center; justify-content: space-between;
   min-height: var(--button-height); border-bottom: 1px solid var(--color-border);
-  font-weight: 300; line-height: 1.4;
+  @include type.role(ui);
   transition: border-color var(--transition-duration) ease;
   &:hover { border-color: var(--color-text); text-decoration: none; }
 }
-.eyebrow { color: var(--color-muted); font-size: var(--font-caption); }
+.eyebrow { color: var(--color-muted); @include type.role(meta); }
+.inline-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  pointer-events: none;
+  background: rgb(0 0 0 / 68%);
+}
+.inline-modal-corner {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
 }
 
-// Japanese uses a native CJK fallback while the Latin masthead retains SUITE.
-:root[lang='ja'] {
-  --font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', Meiryo, 'SUITE', sans-serif;
-}
-:root[lang='ja'] .archive-summary,
-:root[lang='ja'] .exhibit-panel-description,
-:root[lang='ja'] .programme-detail-description { line-break: strict; word-break: normal; }
+// Locale changes only the family, never the role or its scale.
+:root[lang='ja'] { --font-family: var(--font-japanese); --font-reading: 'Noto Sans JP', 'Pretendard', sans-serif; }
+[lang='en'] { --font-family: var(--font-latin); --font-reading: 'Pretendard', sans-serif; }
+[lang='ko'] { --font-family: var(--font-korean); --font-reading: 'Pretendard', 'Noto Sans JP', sans-serif; }
+:root[lang='ja'] body { line-break: strict; word-break: normal; }

@@ -1,0 +1,12 @@
+// Role definitions live in _tokens.scss; layout and animation never scale these values.
+@mixin role($name) {
+  @if $name == body or $name == support or $name == meta {
+    font-family: var(--font-reading);
+  } @else {
+    font-family: var(--font-family);
+  }
+  font-size: var(--type-#{$name}-size);
+  font-weight: var(--type-weight);
+  line-height: var(--type-#{$name}-line);
+  letter-spacing: var(--type-#{$name}-tracking);
+}

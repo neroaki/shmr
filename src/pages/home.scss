@@ -1,3 +1,5 @@
+@use '../styles/typography' as type;
+
 .hero {
   position: relative;
   min-height: calc(100svh - var(--page-gutter));
@@ -11,14 +13,20 @@
 .hero-meta {
   display: flex; justify-content: space-between; gap: 1rem;
   padding: 1.25rem var(--inner-gutter) 0;
-  font-size: var(--font-hero-caption); color: var(--color-muted); letter-spacing: .02em;
+   color: var(--color-muted);
 }
 .hero-figure {
+  container-type: inline-size;
   width: 100%; display: grid;
-  grid-template-columns: 1fr minmax(0, clamp(28rem, 27vw, 66rem)) 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, min(43vw, max(28rem, 27vw))) minmax(0, 1fr);
   column-gap: clamp(1rem, 1.15vw, 2.75rem); align-items: stretch;
 }
-.hero-photo-slot { grid-column: 2; position: relative; aspect-ratio: 3313 / 2104; }
+.hero-photo-slot {
+  grid-column: 2; position: relative;
+  // Text may increase the row height; it must never widen the photograph into its caption.
+  width: 100%; min-width: 0; align-self: start;
+  aspect-ratio: 3313 / 2104;
+}
 .hero-photo {
   position: absolute; inset: 0; overflow: hidden; background: #b4a38f;
   img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 50%; }
@@ -27,24 +35,25 @@
 .hero-notes {
   grid-column: 3; display: flex; flex-direction: column; justify-content: space-between;
   width: min(100%, clamp(14rem, 15vw, 30rem)); gap: clamp(1.25rem, 2svh, 3rem);
-  color: var(--color-muted); font-size: clamp(.6875rem, .66vw, 1.4rem); line-height: 1.75;
+  min-width: 0; margin-top: 0;
+  height: 100%;
+  color: var(--color-muted);
 }
 .hero-story {
   display: flex; flex-direction: column; align-items: flex-start; gap: clamp(.65rem, 1.2svh, 1.5rem);
-  .hero-question { color: var(--color-text); font-size: 1.08em; letter-spacing: .04em; line-height: 1.6; }
+  .hero-question { color: var(--color-text); }
   a { border-bottom: 1px solid var(--color-border); padding-bottom: .2em; display: inline-flex; gap: 1.5rem; }
 }
 .hero-reflection {
-  font-size: .95em; line-height: 1.85;
+
   span { display: block; }
-  .hero-reflection-date { margin-bottom: .7rem; font-size: .9em; letter-spacing: .12em; text-transform: uppercase; }
+  .hero-reflection-date { margin-bottom: .7rem; text-transform: uppercase; }
 }
 .hero-title {
   position: relative; z-index: 3;
   display: flex; justify-content: center; gap: .18em; padding-inline: var(--inner-gutter);
-  font-family: var(--font-masthead-family);
-  font-size: 9.1vw; font-weight: var(--masthead-weight); line-height: var(--masthead-line-height);
-  white-space: nowrap; letter-spacing: var(--masthead-letter-spacing);
+
+  white-space: nowrap;
   transform-origin: center; pointer-events: none;
   > span { display: inline-block; flex-shrink: 0; }
 }
@@ -69,7 +78,7 @@
 }
 .hero-masthead {
   position: relative;
-  padding-bottom: calc(2.5rem + var(--font-caption) * var(--line-body));
+  padding-bottom: calc(2.5rem + var(--type-meta-size) * var(--type-meta-line));
 }
 .hero-brand {
   position: absolute;
@@ -81,8 +90,9 @@
   width: var(--hero-brand-width);
   margin: 0;
   color: var(--color-muted);
+  font-family: var(--font-family);
   font-size: var(--hero-brand-size, 1rem);
-  font-weight: var(--font-weight-body);
+  font-weight: var(--type-weight);
   line-height: 1.2;
   letter-spacing: 0;
 }
@@ -95,7 +105,7 @@
 }
 @media (max-width: 1100px) {
   .hero-figure { grid-template-columns: .65fr minmax(0, 43vw) 1fr; }
-  .hero-notes { font-size: .6875rem; }
+
 }
 @media (prefers-reduced-motion: reduce) {
   .hero[data-intro='preparing'] {
@@ -109,7 +119,21 @@
 
 .theme-toggle {
   display: inline-flex; align-items: baseline; gap: .65em;
-  border: 0; padding: 0; background: none; color: inherit; letter-spacing: inherit;
+  border: 0; padding: 0; background: none; color: inherit;
   &:hover { color: var(--color-text); }
-  .theme-toggle-state { font-size: .85em; opacity: .7; }
+  .theme-toggle-state { opacity: .7; }
+}
+
+// Semantic typography: shared across sections and locales.
+.hero-meta, .theme-toggle { @include type.role(ui); }
+.hero-notes, .hero-reflection, .hero-reflection-date { @include type.role(meta); }
+.theme-toggle-state { @include type.role(ui); }
+.hero-question { @include type.role(meta); }
+.hero-title { @include type.role(display); }
+.hero-title { font-family: var(--font-latin); }
+
+// Caption density follows the photograph's available space, including narrow desktop windows.
+@container (max-width: 1150px) {
+  .hero-story > p { display: none; }
+  .hero-notes { justify-content: flex-end; gap: 1.5rem; }
 }

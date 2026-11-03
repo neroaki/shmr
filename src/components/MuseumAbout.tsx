@@ -4,6 +4,8 @@ import { museumExteriorPhotos, museumServices } from '../data/home'
 import { useAboutScene } from '../hooks/useAboutScene'
 import { usePhotoDepth } from '../hooks/usePhotoDepth'
 import { scrollPageToSection } from '../lib/page-scroll'
+import accessMapLight from '../assets/images/maps/museum-access-light-cutout.webp'
+import accessMapDark from '../assets/images/maps/museum-access-dark-cutout.webp'
 import './museum-about.scss'
 
 const directions = ['top', 'right', 'bottom', 'left'] as const
@@ -69,39 +71,48 @@ export function MuseumAbout() {
             <section key={service.id} id={`about-panel-${service.id}`}
               className={`about-panel about-panel--${directions[index]}${active === index ? ' is-open' : ''}`}
               ref={element => { panels.current[index] = element }}
-              aria-labelledby={`about-heading-${service.id}`} aria-hidden={active !== index}
+              aria-labelledby={service.id === 'visit' ? undefined : `about-heading-${service.id}`}
+              aria-label={service.id === 'visit' ? t(service.title) : undefined} aria-hidden={active !== index}
               inert={active !== index} tabIndex={-1}>
               <button className="about-return" type="button" onClick={close}>{t("소개로 돌아가기")} <span aria-hidden="true">×</span></button>
               {service.id === 'visit' ? (
                 <div className="about-visit-layout">
-                  <div className="about-visit-location">
-                    <p className="eyebrow">{t("서울역사박물관")} <span aria-hidden="true">/ 01</span></p>
-                    <div>
-                      <p className="about-visit-location-label">{t("서울특별시 종로구")}</p>
-                      <p className="about-visit-address">{t("새문안로")} <span lang="en">55</span></p>
-                      <p className="about-visit-stop">{t("버스 정류장 · 서울역사박물관·경희궁앞(중)")}</p>
-                    </div>
-                    <a className="text-link" href={service.links[0].href}>{t("오시는 길 보기")} <span aria-hidden="true">↗</span></a>
-                  </div>
-                  <div className="about-visit-guide">
-                    <h3 id={`about-heading-${service.id}`}>{t(service.title)}</h3>
-                    <div className="about-visit-entry"><strong>{t("무료 관람")}</strong><span>{t("개인 자유관람")}</span></div>
-                    <div className="about-visit-hours" aria-label={t("관람시간")}>
-                      <p className="about-visit-detail-label">{t("관람시간")}</p>
-                      <div><span>{t("화·수·금·토·일")}</span><strong>09:00 – 21:00</strong><small>{t("입장 마감 20:30")}</small></div>
-                      <div><span>{t("목요일")}</span><strong>09:00 – 18:00</strong><small>{t("입장 마감 17:30")}</small></div>
-                    </div>
-                    <p className="about-visit-period">{t("야간 개방 확대 운영 · 2026. 9. 15. – 11. 30.")}</p>
-                    <div className="about-visit-closed"><span>{t("휴관")}</span><p>{t("매주 월요일·1월 1일")} <small>{t("월요일이 공휴일이면 개관")}</small></p></div>
-                    <a className="text-link" href={service.links[1].href}>{t("최신 관람안내 확인")} <span aria-hidden="true">↗</span></a>
+                  <div className="about-visit-content">
+                    <section className="about-visit-location" aria-labelledby="visit-location-title">
+                      <h4 id="visit-location-title">{t("찾아오시는 길")}</h4>
+                      <div className="about-visit-destination">
+                        <p className="about-visit-museum">{t("서울역사박물관")}</p>
+                        <address>{t("서울특별시 종로구 새문안로 55")}</address>
+                      </div>
+                      <figure className="about-visit-map">
+                        <img className="about-visit-map--light" src={accessMapLight} alt={t("서울역사박물관 약도: 경희궁과 새문안로, 서대문역과 광화문역 위치")} width="1536" height="1024" loading="lazy" decoding="async" />
+                        <img className="about-visit-map--dark" src={accessMapDark} alt={t("서울역사박물관 약도: 경희궁과 새문안로, 서대문역과 광화문역 위치")} width="1536" height="1024" loading="lazy" decoding="async" />
+                      </figure>
+                      <a className="about-visit-link text-link" href={service.links[0].href}>{t("오시는 길 보기")} <span aria-hidden="true">↗</span></a>
+                    </section>
+                    <section className="about-visit-guide" aria-labelledby="visit-hours-title">
+                      <h4 id="visit-hours-title">{t("관람시간")}</h4>
+                      <dl className="about-visit-hours">
+                        <div><dt>{t("화·수·금·토·일")}</dt><dd><strong>09:00 – 21:00</strong><small>{t("입장 마감 20:30")}</small></dd></div>
+                        <div><dt>{t("목요일")}</dt><dd><strong>09:00 – 18:00</strong><small>{t("입장 마감 17:30")}</small></dd></div>
+                      </dl>
+                      <p className="about-visit-period">{t("야간 개방 확대 운영 · 2026. 9. 15. – 11. 30.")}</p>
+                      <dl className="about-visit-facts">
+                        <div><dt>{t("관람료")}</dt><dd>{t("무료")}</dd></div>
+                        <div><dt>{t("휴관")}</dt><dd>{t("매주 월요일·1월 1일")}<small>{t("월요일이 공휴일이면 개관")}</small></dd></div>
+                      </dl>
+                      <a className="about-visit-link text-link" href={service.links[1].href}>{t("최신 관람안내 확인")} <span aria-hidden="true">↗</span></a>
+                    </section>
                   </div>
                 </div>
               ) : (
                 <div className="about-panel-layout">
-                  <figure className="about-panel-image">
-                    <img src={service.image} alt={t(service.alt)} loading="lazy" decoding="async" />
-                    <figcaption>{t(service.caption)}</figcaption>
-                  </figure>
+                  <div className="about-panel-image">
+                    <figure className="about-panel-figure">
+                      <img src={service.image} alt={t(service.alt)} loading="lazy" decoding="async" />
+                      <figcaption>{t(service.caption)}</figcaption>
+                    </figure>
+                  </div>
                   <div className="about-panel-copy">
                     <p className="eyebrow">{t("서울역사박물관")} <span aria-hidden="true">/ {String(index + 1).padStart(2, '0')}</span></p>
                     <h3 id={`about-heading-${service.id}`}>{t(service.title)}</h3>
