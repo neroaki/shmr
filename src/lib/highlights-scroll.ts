@@ -1,5 +1,11 @@
 // Scroll distances, not timeouts: every input continues to move the scene.
 export function createHighlightsScroll(distance: number, viewportHeight: number) {
+  // Resizes or empty content can briefly leave no horizontal distance to travel.
+  if (distance <= 0) return {
+    travel: 0, horizontalEnd: 0, soften: 0,
+    at: () => ({ left: 0, offset: 0 }),
+    positionFor: () => 0,
+  }
   const soften = Math.min(distance, Math.max(160, Math.min(280, viewportHeight * 0.28)))
   const linearEnd = distance - soften / 2
   const horizontalEnd = distance + soften / 2

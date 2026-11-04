@@ -1,11 +1,10 @@
+import { MuseumVisit } from './MuseumVisit'
 import { useLanguage } from '../i18n/LanguageContext'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { museumExteriorPhotos, museumServices } from '../data/home'
 import { useAboutScene } from '../hooks/useAboutScene'
 import { usePhotoDepth } from '../hooks/usePhotoDepth'
 import { scrollPageToSection } from '../lib/page-scroll'
-import accessMapLight from '../assets/images/maps/museum-access-light-cutout.webp'
-import accessMapDark from '../assets/images/maps/museum-access-dark-cutout.webp'
 import './museum-about.scss'
 
 const directions = ['top', 'right', 'bottom', 'left'] as const
@@ -13,10 +12,15 @@ const arrows = ['↓', '←', '↑', '→']
 const museum = museumServices[0]
 const services = museumServices.slice(1)
 
-export function MuseumAbout() {
+type MuseumAboutProps = {
+  visitContent?: ReactNode
+  initialPanel?: number | null
+}
+
+export function MuseumAbout({ visitContent, initialPanel = null }: MuseumAboutProps = {}) {
   const { t } = useLanguage()
   const { section, scene } = useAboutScene()
-  const [active, setActive] = useState<number | null>(null)
+  const [active, setActive] = useState<number | null>(initialPanel)
   const [photo] = useState(() => museumExteriorPhotos[Math.floor(Math.random() * museumExteriorPhotos.length)])
   const mediaRef = usePhotoDepth(active !== null)
   const triggers = useRef<(HTMLButtonElement | null)[]>([])
@@ -24,6 +28,29 @@ export function MuseumAbout() {
   useEffect(() => {
     if (active !== null) panels.current[active]?.focus({ preventScroll: true })
   }, [active])
+  useEffect(() => {
+    if (active === null) return
+    let frame = 0
+    const resetOutsideViewport = () => {
+      frame = 0
+      const bounds = section.current?.getBoundingClientRect()
+      if (bounds && (bounds.bottom <= 0 || bounds.top >= window.innerHeight)) {
+        // Leaving the section resets its content without returning focus to it.
+        setActive(null)
+      }
+    }
+    const scheduleCheck = () => {
+      if (!frame) frame = requestAnimationFrame(resetOutsideViewport)
+    }
+    scheduleCheck()
+    window.addEventListener('scroll', scheduleCheck, { passive: true })
+    window.addEventListener('resize', scheduleCheck)
+    return () => {
+      cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', scheduleCheck)
+      window.removeEventListener('resize', scheduleCheck)
+    }
+  }, [active, section])
   const close = () => {
     const previous = active
     setActive(null)
@@ -43,7 +70,7 @@ export function MuseumAbout() {
               <h2 id="about-title" lang="en"><span>About the</span><span className="about-title-highlight">Museum</span></h2>
               <div className="about-photo-introduction">
                 <div className="about-intro-label"><span>{t("서울역사박물관")}</span><span aria-hidden="true">04</span></div>
-                <p className="about-mission">{museum.introHeading?.map(line => <span key={t(line)}>{t(line)}</span>)}</p>
+                <h3 className="about-mission">{museum.introHeading?.map(line => <span key={t(line)}>{t(line)}</span>)}</h3>
                 <div className="about-intro-body">{museum.introParagraphs?.map(paragraph => <p key={t(paragraph)}>{t(paragraph)}</p>)}</div>
                 <dl className="about-intro-roles">{museum.introRoles?.map(role => <div key={t(role.title)}><dt>{t(role.title)}</dt><dd>{t(role.detail)}</dd></div>)}</dl>
               </div>
@@ -75,37 +102,7 @@ export function MuseumAbout() {
               aria-label={service.id === 'visit' ? t(service.title) : undefined} aria-hidden={active !== index}
               inert={active !== index} tabIndex={-1}>
               <button className="about-return" type="button" onClick={close}>{t("소개로 돌아가기")} <span aria-hidden="true">×</span></button>
-              {service.id === 'visit' ? (
-                <div className="about-visit-layout">
-                  <div className="about-visit-content">
-                    <section className="about-visit-location" aria-labelledby="visit-location-title">
-                      <h4 id="visit-location-title">{t("찾아오시는 길")}</h4>
-                      <div className="about-visit-destination">
-                        <p className="about-visit-museum">{t("서울역사박물관")}</p>
-                        <address>{t("서울특별시 종로구 새문안로 55")}</address>
-                      </div>
-                      <figure className="about-visit-map">
-                        <img className="about-visit-map--light" src={accessMapLight} alt={t("서울역사박물관 약도: 경희궁과 새문안로, 서대문역과 광화문역 위치")} width="1536" height="1024" loading="lazy" decoding="async" />
-                        <img className="about-visit-map--dark" src={accessMapDark} alt={t("서울역사박물관 약도: 경희궁과 새문안로, 서대문역과 광화문역 위치")} width="1536" height="1024" loading="lazy" decoding="async" />
-                      </figure>
-                      <a className="about-visit-link text-link" href={service.links[0].href}>{t("오시는 길 보기")} <span aria-hidden="true">↗</span></a>
-                    </section>
-                    <section className="about-visit-guide" aria-labelledby="visit-hours-title">
-                      <h4 id="visit-hours-title">{t("관람시간")}</h4>
-                      <dl className="about-visit-hours">
-                        <div><dt>{t("화·수·금·토·일")}</dt><dd><strong>09:00 – 21:00</strong><small>{t("입장 마감 20:30")}</small></dd></div>
-                        <div><dt>{t("목요일")}</dt><dd><strong>09:00 – 18:00</strong><small>{t("입장 마감 17:30")}</small></dd></div>
-                      </dl>
-                      <p className="about-visit-period">{t("야간 개방 확대 운영 · 2026. 9. 15. – 11. 30.")}</p>
-                      <dl className="about-visit-facts">
-                        <div><dt>{t("관람료")}</dt><dd>{t("무료")}</dd></div>
-                        <div><dt>{t("휴관")}</dt><dd>{t("매주 월요일·1월 1일")}<small>{t("월요일이 공휴일이면 개관")}</small></dd></div>
-                      </dl>
-                      <a className="about-visit-link text-link" href={service.links[1].href}>{t("최신 관람안내 확인")} <span aria-hidden="true">↗</span></a>
-                    </section>
-                  </div>
-                </div>
-              ) : (
+              {service.id === 'visit' ? (visitContent ?? <MuseumVisit />) : (
                 <div className="about-panel-layout">
                   <div className="about-panel-image">
                     <figure className="about-panel-figure">

@@ -1,0 +1,14 @@
+@use '../styles/typography' as type;
+
+.about-study-page {
+  padding-top: var(--header-height);
+  .museum-about { height: calc(100svh - var(--header-height)); margin: 0; }
+  .about-scene { position: relative; top: 0; }
+  .study-header { display: flex; justify-content: space-between; gap: 2rem; }
+  .study-tools { display: flex; align-items: center; gap: 1.5rem; @include type.role(meta); }
+  .study-badge { color: var(--color-muted); }
+  .study-tools label { display: flex; align-items: center; gap: .75rem; }
+  select { color: var(--color-text); background: var(--color-background); border: 1px solid var(--color-border); padding: .4rem .6rem; font: inherit; }
+  .theme-toggle { border: 0; background: none; color: var(--color-text); font: inherit; cursor: pointer; }
+  .theme-toggle-state { margin-left: .5rem; color: var(--color-muted); }
+}

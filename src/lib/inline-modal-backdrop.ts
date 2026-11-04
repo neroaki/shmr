@@ -31,10 +31,11 @@ export function mountInlineModalBackdrop(surface: HTMLElement) {
   return () => {
     fade.cancel()
     const exit = backdrop.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, fill: 'forwards' })
-    void exit.finished.then(() => {
+    const cleanup = () => {
       cancelAnimationFrame(frame)
       corners.forEach((corner) => corner.remove())
       backdrop.remove()
-    })
+    }
+    void exit.finished.then(cleanup, cleanup)
   }
 }

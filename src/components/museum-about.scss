@@ -17,7 +17,7 @@
   position: absolute; inset: var(--about-frame);
 }
 .about-panorama {
-  // Text over the shaded photograph retains its own contrast in both themes.
+  // Photo copy keeps its own contrast in both themes.
   --color-text: #fdfaf2;
   --color-muted: #bdbdbd;
   --color-background: #1c1c1c;
@@ -26,6 +26,14 @@
   img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   &--shm1 img { object-position: center 52%; }
   &--shm2 img { object-position: center 64%; }
+  &--shm1 .about-photo-introduction {
+    --about-copy-color: #f5f2eb;
+    --about-copy-shadow: 0 1px 3px rgb(0 0 0 / .85);
+  }
+  &--shm2 .about-photo-introduction {
+    --about-copy-color: #1c1c1c;
+    --about-copy-shadow: 0 1px 3px rgb(245 242 235 / .65);
+  }
   &--shm1 .about-introduction {
     color: var(--color-text); border-color: rgb(255 255 255 / .65);
     text-shadow: 0 1px 8px rgb(0 0 0 / .8);
@@ -38,7 +46,6 @@
 }
 .about-panorama-media {
   position: absolute; inset: 0;
-  &::before { content: ''; position: absolute; z-index: 1; inset: 0; background: linear-gradient(90deg, rgb(16 19 16 / .93), rgb(16 19 16 / .8) 39%, rgb(16 19 16 / .2) 58%, transparent 75%); pointer-events: none; }
   &::after { content: ''; position: absolute; inset: 48% 0 0; background: linear-gradient(transparent, rgb(0 0 0 / .36)); pointer-events: none; }
   h2 {
     position: absolute; z-index: 1; right: clamp(.75rem, 2vw, 1.75rem); bottom: clamp(.75rem, 2vw, 1.75rem);
@@ -69,20 +76,19 @@
 .about-intro-label {
   display: flex; align-items: center; justify-content: space-between; gap: 1rem;
   padding-bottom: .875rem;
-    color: var(--color-muted);
-
+  color: var(--about-copy-color);
+  text-shadow: var(--about-copy-shadow);
 }
 .about-mission {
   margin-top: clamp(1rem, 2vh, 1.5rem);
-
+  color: var(--about-copy-color);
+  text-shadow: var(--about-copy-shadow);
   > span { display: block; }
-
 }
 .about-intro-body {
   margin-top: clamp(1rem, 2vh, 1.5rem);
-
-  color: #e2e0d9;
-  p + p { margin-top: .75rem; }
+  color: var(--about-copy-color);
+  text-shadow: var(--about-copy-shadow);
 }
 .about-intro-roles {
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem;
@@ -251,7 +257,6 @@
     figcaption { max-width: 75%; }
   }
   .about-panorama-media h2 { right: .5rem; bottom: .5rem; }
-  .about-panorama-media::before { background: linear-gradient(180deg, rgb(16 19 16 / .94), rgb(16 19 16 / .8) 58%, rgb(16 19 16 / .1)); }
   .about-photo-introduction { inset: 0 0 4rem; width: 100%; padding: .875rem .75rem; }
   .about-intro-label { padding-bottom: .625rem; }
   .about-mission { margin-top: 1rem; }
@@ -272,7 +277,7 @@
 // Semantic typography: shared across sections and locales.
 .about-panorama-media h2 { @include type.role(section); }
 .about-panel-copy h3 { @include type.role(content); }
-.about-mission { @include type.role(lead); }
+.about-mission { @include type.role(content); font-weight: 600; }
 .about-intro-body, .about-panel-copy > p:not(.eyebrow) { @include type.role(body); }
 .about-intro-roles dt, .about-introduction, .about-edge, .about-return, .about-panel-copy .text-link { @include type.role(ui); }
 .about-panorama figcaption, .about-panel-image figcaption, .about-intro-label, .about-intro-label > span:last-child, .about-intro-roles dd, .about-panel-copy .eyebrow { @include type.role(meta); }

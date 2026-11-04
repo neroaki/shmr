@@ -1,6 +1,7 @@
 import './inline-card-detail.scss'
 import { useLanguage } from '../i18n/LanguageContext'
-import { useLayoutEffect, useRef } from 'react'
+import { useRef } from 'react'
+import { useDetailTextFit } from '../hooks/useDetailTextFit'
 import { useInlineCardDialog } from '../hooks/useInlineCardDialog'
 
 interface Props {
@@ -25,38 +26,8 @@ export function InlineCardDetail({ active, onClose, titleId, descriptionId, cate
   const closeRef = useRef<HTMLButtonElement>(null)
   useInlineCardDialog(active, detailRef, closeRef, onClose)
 
-  // Fit the complete text column together, preserving its role sizes and spacing ratios.
-  // Re-measure after locale/font changes and during the existing card expansion.
-  useLayoutEffect(() => {
-    const surface = detailRef.current
-    if (!active || !surface) return
-    const inner = surface.querySelector<HTMLElement>('.programme-detail-inner')!
-    const fit = () => {
-      if (surface.clientWidth < 1 || surface.clientHeight < 1) return
-      let low = .25
-      let high = Math.min(1, surface.clientWidth / 360)
-      const apply = (scale: number) => {
-        surface.style.setProperty('--detail-fit', String(scale))
-        inner.style.width = `${(surface.clientWidth - 1) / scale}px`
-        inner.style.height = 'auto'
-      }
-      for (let i = 0; i < 9; i++) {
-        const scale = (low + high) / 2
-        apply(scale)
-        if (inner.getBoundingClientRect().height > surface.clientHeight - 2
-          || inner.scrollWidth > inner.clientWidth + 1) high = scale
-        else low = scale
-      }
-      apply(low)
-      inner.style.height = `${(surface.clientHeight - 2) / low}px`
-    }
-    const observer = new ResizeObserver(fit)
-    observer.observe(surface)
-    fit()
-    let alive = true
-    void document.fonts.ready.then(() => { if (alive) fit() })
-    return () => { alive = false; observer.disconnect() }
-  }, [active, t, title, description])
+  const contentKey = JSON.stringify([category, title, description, fields, notes, cta, credit, t('닫기')])
+  useDetailTextFit(active, detailRef, contentKey)
 
   return <div ref={detailRef} className="programme-detail" aria-hidden={!active} inert={!active}>
     <div className="programme-detail-inner">

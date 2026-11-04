@@ -9,6 +9,14 @@
 }
 
 @font-face {
+  font-family: 'SUITE';
+  src: url('../assets/fonts/SUITE-SemiBold.otf') format('opentype');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'Pretendard';
   src: url('../assets/fonts/PretendardVariable.woff2') format('woff2');
   font-style: normal;
@@ -22,6 +30,16 @@
   font-style: normal;
   font-weight: 300;
   font-display: swap;
+}
+
+// The about heading uses a bundled Japanese semibold subset.
+@font-face {
+  font-family: 'Noto Sans JP';
+  src: url('../assets/fonts/NotoSansJP-About-SemiBold.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  unicode-range: U+3046, U+3068, U+306B, U+306E, U+30A6, U+30BD, U+30EB, U+4F1A, U+51FA, U+5316, U+535A, U+53F2, U+6587, U+6B74, U+7269, U+9928;
 }
 
 * { box-sizing: border-box; }

@@ -33,11 +33,11 @@ export function CollectionCard({ item, column, row, rowSpan, active, preview, on
         <span className="collection-card-caption"><span>{t(item.shortTitle)}</span><span aria-hidden="true">↗</span></span>
       </button>
       <InlineCardDetail active={active} onClose={onClose} titleId={`collection-title-${item.id}`}
-        descriptionId={`collection-description-${item.id}`} category={t(item.category)} title={t(item.title)}
-        description={t(item.description)} fields={[
+        descriptionId={`collection-description-${item.id}`} category={item.category} title={item.title}
+        description={item.description} fields={[
           { label: '시기', value: item.period }, { label: '분류', value: item.kind },
           ...(item.recordNumber ? [{ label: '번호', value: item.recordNumber }] : []),
-        ]} source={item.source} cta={t("아카이브 원문 보기")} credit={t("서울역사박물관 소장 · 서울역사아카이브")} />
+        ]} source={item.source} cta="아카이브 원문 보기" credit="서울역사박물관 소장 · 서울역사아카이브" />
     </li>
   )
 }
