@@ -1,7 +1,7 @@
 import { useLanguage } from '../i18n/LanguageContext'
 import { navigation, official } from '../data/home'
 import { scrollPageToSection } from '../lib/page-scroll'
-import museumLogo from '../assets/images/museum-official-logo.jpg'
+import museumLogo from '../assets/images/museum-symbol-mark.webp'
 
 export function Footer() {
   const { t } = useLanguage()
@@ -27,7 +27,7 @@ export function Footer() {
       <div className="footer-bottom">
         <p>{t("서울역사박물관 웹사이트 리뉴얼 포트폴리오입니다.")}<br />{t("실제 관람·예약은 공식 사이트에서 확인해 주세요.")}</p>
         <div className="footer-logo">
-          <img src={museumLogo} alt={t("서울역사박물관 공식 로고")} width="964" height="401" />
+          <img src={museumLogo} alt={t("서울역사박물관 공식 로고")} width="3251" height="655" />
         </div>
         <a href="#top">{t("처음으로")} <span aria-hidden="true">↑</span></a>
       </div>

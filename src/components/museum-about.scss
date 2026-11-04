@@ -150,6 +150,26 @@
   figcaption { margin-top: .75rem; color: var(--color-muted); }
 }
 .about-panel-figure { display: contents; }
+
+// Centre the archive image and copy as one compact composition.
+#about-panel-research {
+  .about-panel-layout {
+    width: 82%; max-width: 96rem; margin-inline: auto;
+    align-items: center;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr);
+  }
+  .about-panel-image { align-items: center; }
+  .about-panel-figure {
+    display: block; width: fit-content; max-width: 100%; margin: 0;
+  }
+  .about-panel-figure img {
+    display: block; width: auto; height: auto; max-width: 100%;
+    max-height: calc(100svh - var(--header-height) - 2 * var(--about-frame) - 8rem);
+  }
+  .about-panel-figure figcaption {
+    margin-top: .75rem; text-align: right;
+  }
+}
 // Keep these posters compact and bring them towards the central text column.
 #about-panel-learning,
 #about-panel-news {

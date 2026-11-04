@@ -2,9 +2,10 @@ import './inline-card-detail.scss'
 import { useLanguage } from '../i18n/LanguageContext'
 import { useRef } from 'react'
 import { useDetailTextFit } from '../hooks/useDetailTextFit'
-import { useInlineCardDialog } from '../hooks/useInlineCardDialog'
+import { useInlineCardDialog, type DialogOrigin } from '../hooks/useInlineCardDialog'
 
 interface Props {
+  origin?: DialogOrigin
   active: boolean
   onClose: () => void
   titleId: string
@@ -19,12 +20,12 @@ interface Props {
   credit: string
 }
 
-// Both galleries expand their existing card into this shared React detail surface.
-export function InlineCardDetail({ active, onClose, titleId, descriptionId, category, title, description, fields, notes = [], source, cta, credit }: Props) {
+// Shared detail content and dialog accessibility for both galleries.
+export function InlineCardDetail({ origin, active, onClose, titleId, descriptionId, category, title, description, fields, notes = [], source, cta, credit }: Props) {
   const { t } = useLanguage()
   const detailRef = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
-  useInlineCardDialog(active, detailRef, closeRef, onClose)
+  useInlineCardDialog(active, detailRef, closeRef, onClose, origin)
 
   const contentKey = JSON.stringify([category, title, description, fields, notes, cta, credit, t('닫기')])
   useDetailTextFit(active, detailRef, contentKey)

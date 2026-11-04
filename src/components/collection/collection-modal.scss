@@ -1,0 +1,54 @@
+.collection-modal-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+}
+.collection-modal-dim {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / 68%);
+}
+.collection-modal {
+  position: absolute;
+  pointer-events: auto;
+  isolation: isolate;
+  color: var(--color-text);
+}
+.collection-modal-shell {
+  position: absolute;
+  inset: 0;
+  background: var(--color-surface);
+  transform-origin: top left;
+}
+.collection-modal-image {
+  position: absolute;
+  display: block;
+  max-width: none;
+  object-fit: contain;
+  transform-origin: top left;
+  pointer-events: none;
+}
+.collection-modal-text-clip {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0);
+}
+.collection-modal-text {
+  position: absolute;
+  left: 45%; top: 0;
+  width: 55%; height: 100%;
+  .programme-detail { visibility: visible; opacity: 1; transition: none; }
+  .programme-detail-inner {
+    transform: none;
+    transition: none;
+    padding: var(--detail-block-padding, var(--collection-detail-padding)) var(--collection-detail-padding);
+    padding-top: calc(var(--detail-block-padding, var(--collection-detail-padding)) * var(--detail-top-space-scale));
+  }
+  .programme-detail-body h3 { word-break: keep-all; overflow-wrap: anywhere; }
+}
+.collection-modal[data-phase='opening'], .collection-modal[data-phase='closing'] {
+  .collection-modal-shell, .collection-modal-image { will-change: transform; }
+  .collection-modal-text { will-change: transform, opacity; }
+}
+.collection-modal[data-phase='closing'] .collection-modal-text { pointer-events: none; }

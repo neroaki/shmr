@@ -21,7 +21,7 @@
   display: flex;
   flex-direction: column;
   transform: translateX(1.25rem);
-  transition: transform 850ms var(--programme-motion-ease);
+  transition: transform 850ms var(--programme-motion-ease, cubic-bezier(.22, .8, .22, 1));
   .is-open & { transform: translateX(0); }
 }
 .programme-detail-top {

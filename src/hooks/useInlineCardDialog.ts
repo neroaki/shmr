@@ -2,16 +2,20 @@ import { useLayoutEffect, useRef, type RefObject, type KeyboardEvent } from 'rea
 import { lockPageScroll } from '../lib/page-scroll'
 import { mountInlineModalBackdrop } from '../lib/inline-modal-backdrop'
 
+export interface DialogOrigin {
+  triggerRef: RefObject<HTMLButtonElement | null>
+}
+
 // Shared modal scope; background remains inert while outside clicks dismiss safely.
-export function useInlineCardDialog(active: boolean, detailRef: RefObject<HTMLDivElement | null>, closeRef: RefObject<HTMLButtonElement | null>, onClose: () => void) {
+export function useInlineCardDialog(active: boolean, detailRef: RefObject<HTMLDivElement | null>, closeRef: RefObject<HTMLButtonElement | null>, onClose: () => void, origin?: DialogOrigin) {
   const dismiss = useRef(onClose)
   useLayoutEffect(() => { dismiss.current = onClose }, [onClose])
   useLayoutEffect(() => {
     if (!active) return
     const card = detailRef.current!.closest<HTMLElement>('[data-inline-card]')!
-    const trigger = card.querySelector<HTMLButtonElement>('[data-card-trigger]')!
+    const trigger = origin?.triggerRef.current ?? card.querySelector<HTMLButtonElement>('[data-card-trigger]')!
     const surface = card.querySelector<HTMLElement>('.programme-card-surface') ?? card
-    const unlock = lockPageScroll(card.closest<HTMLElement>('.archive, .programme'))
+    const unlock = lockPageScroll((origin ? trigger.closest<HTMLElement>('.archive') : card.closest<HTMLElement>('.archive, .programme')))
     const previous: { element: HTMLElement; inert: boolean }[] = []
     let branch: HTMLElement = card
     while (branch.parentElement && branch !== document.body) {
@@ -23,7 +27,7 @@ export function useInlineCardDialog(active: boolean, detailRef: RefObject<HTMLDi
       }
       branch = branch.parentElement
     }
-    const removeBackdrop = mountInlineModalBackdrop(surface)
+    const removeBackdrop = origin ? () => {} : mountInlineModalBackdrop(surface)
     // Start at the content heading, without painting a button focus ring on entry.
     // Keyboard navigation still exposes the normal focus-visible control outline.
     const heading = detailRef.current?.querySelector<HTMLElement>('[data-dialog-heading]')
@@ -64,7 +68,7 @@ export function useInlineCardDialog(active: boolean, detailRef: RefObject<HTMLDi
         if (trigger.isConnected && !document.querySelector('[aria-modal="true"]')) trigger.focus({ preventScroll: true })
       })
     }
-  }, [active, closeRef, detailRef])
+  }, [active, closeRef, detailRef, origin])
 }
 
 export function containCardFocus(event: KeyboardEvent<HTMLElement>) {

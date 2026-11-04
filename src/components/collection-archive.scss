@@ -10,7 +10,6 @@
   --archive-top: var(--header-height);
 
   --archive-gap: clamp(6px, .55vw, 16px);
-  --archive-ease: cubic-bezier(.22, .8, .22, 1);
   position: sticky;
   top: var(--archive-top);
   height: calc(100svh - var(--archive-top));
@@ -99,28 +98,16 @@
   width: var(--tile-width); height: calc(var(--row-span) * var(--tile-height) + (var(--row-span) - 1) * var(--archive-gap));
   z-index: 1; overflow: hidden; background: var(--color-surface);
   border-radius: 0;
-  transform-origin: center;
-  scale: 1;
-  transition: left 800ms var(--archive-ease), top 800ms var(--archive-ease), width 800ms var(--archive-ease), height 800ms var(--archive-ease), scale 800ms var(--archive-ease), filter 500ms ease;
   &.is-previewing { z-index: 2; }
-  .has-selection &:not(.is-open) { pointer-events: none; }
-  // Preserve the desktop footprint; narrow grids receive more usable detail space.
-  &.is-open { background: var(--color-surface); z-index: 5; left: 14.8%; top: 16.4%; width: 70.4%; height: 67.2%; box-shadow: 0 12px 26px #00000024; }
-  .programme-detail-inner {
-    width: 100%;
-    padding: var(--detail-block-padding, clamp(1.2rem, 2.4cqw, 3.2rem)) clamp(1.2rem, 2.4cqw, 3.2rem);
-    padding-top: calc(var(--detail-block-padding, clamp(1.2rem, 2.4cqw, 3.2rem)) * var(--detail-top-space-scale));
-  }
-  .programme-detail-body h3 { word-break: keep-all; overflow-wrap: anywhere; }
+  .has-selection & { pointer-events: none; }
+  // Keep the source footprint while its image travels in the modal layer.
+  &.is-selected img, &.is-selected .collection-card-caption { visibility: hidden; }
 
 }
 .collection-card-image {
   position: relative; flex: 0 0 100%; width: 100%; min-width: 0; height: 100%;
   border: 0; padding: clamp(18px, 1.8vw, 60px); background: transparent; color: var(--color-text);
-  transition: flex-basis 800ms var(--archive-ease), width 800ms var(--archive-ease);
-  .is-open & { flex-basis: 45%; width: 45%; cursor: default; }
-  img { display: block; width: 100%; height: 100%; object-fit: contain; -webkit-user-drag: none; transform-origin: center; scale: .9; transition: scale 800ms var(--archive-ease); }
-  .is-open & img { scale: .8; }
+  img { display: block; width: 100%; height: 100%; object-fit: contain; -webkit-user-drag: none; transform-origin: center; scale: .9; }
 
 }
 .collection-card-caption {
@@ -128,7 +115,6 @@
   padding: 1.5rem .75rem .6rem; background: linear-gradient(transparent, var(--color-caption-shade));
     opacity: 0; transition: opacity 200ms ease;
   .is-previewing &, .collection-card-image:focus-visible & { opacity: 1; }
-  .is-open & { opacity: 0; }
 }
 @media (max-height: 800px) {
   .archive-intro .archive-theme { margin-top: .75rem; }
@@ -180,7 +166,6 @@
 
 @container (max-width: 1100px) {
   .archive-copy-links { display: contents; }
-  .collection-card.is-open { left: 3%; top: 0; width: 94%; height: 100%; }
   .archive-cta { min-height: 0; padding-block: .2em; }
   .archive-intro-more {
     grid-template-columns: minmax(0, 1fr) auto;
