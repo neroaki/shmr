@@ -1,5 +1,5 @@
 // Rebuild authored silhouettes at source resolution; photographs are never resampled.
-// Stage 1: render guides for narrow-band edge refinement in refine-collection-cutouts.py.
+// Render silhouette guides for asset preparation; the app uses the completed cutouts directly.
 import { readFile, mkdir, copyFile, writeFile } from 'node:fs/promises'
 import { createHash } from 'node:crypto'
 const { default: sharp } = await import(process.env.SHARP_MODULE || 'sharp')
