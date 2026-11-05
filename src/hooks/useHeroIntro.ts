@@ -2,12 +2,19 @@ import { useLayoutEffect, type RefObject } from 'react'
 import { lockPageScroll } from '../lib/page-scroll'
 import { animateHeroTitle } from '../lib/hero-title-motion'
 
-// One photograph and one heading travel continuously into their resting layout.
+const TRAVEL_DELAY = 300
+const TRAVEL_DURATION = 1300
+const DOCK_TIME = TRAVEL_DELAY + TRAVEL_DURATION
+const DISSOLVE = { duration: 1000, delay: 1050, easing: 'cubic-bezier(.4,0,.2,1)' }
+
+// The registered scan and cutouts share one moving plane, preserving every map landmark.
 export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
   useLayoutEffect(() => {
     const root = ref.current!
     const photo = root.querySelector<HTMLElement>('.hero-photo')!
-    const image = photo.querySelector('img')!
+    const artwork = photo.querySelector<HTMLElement>('.hero-photo-artwork')!
+    const original = photo.querySelector<HTMLImageElement>('.hero-map-original')!
+    const cutouts = photo.querySelector<HTMLElement>('.hero-map-cutouts')!
     const slot = root.querySelector<HTMLElement>('.hero-photo-slot')!
     const title = root.querySelector<HTMLElement>('.hero-title')!
     const reduced = matchMedia('(prefers-reduced-motion: reduce)')
@@ -53,14 +60,19 @@ export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
       Object.assign(photo.style, { position: 'fixed', inset: 'auto', left: '0px', top: '0px', width: `${innerWidth}px`, height: `${innerHeight}px`, zIndex: '2' })
       root.dataset.intro = 'playing'
       // A slow image push precedes the retreat; the typography stays on a separate plane.
-      animate(image, [{ transform: 'scale(1.09)' }, { transform: 'scale(1.025)', offset: .46 }, { transform: 'scale(1)' }], { duration: 1600, easing: 'cubic-bezier(.25,.1,.25,1)' })
+      animate(artwork, [{ transform: 'scale(1.04)' }, { transform: 'scale(1.015)', offset: .46 }, { transform: 'scale(1)' }], { duration: DOCK_TIME, easing: 'cubic-bezier(.25,.1,.25,1)' })
       animate(photo, [
         { left: '0px', top: '0px', width: `${innerWidth}px`, height: `${innerHeight}px` },
         { left: `${target.left}px`, top: `${target.top}px`, width: `${target.width}px`, height: `${target.height}px` },
-      ], { duration: 1300, delay: 300, easing: ease })
-      animate(root.querySelector('.hero-photo-shade')!, [{ opacity: .33 }, { opacity: 0 }], { duration: 1200, delay: 350, easing: ease })
+      ], { duration: TRAVEL_DURATION, delay: TRAVEL_DELAY, easing: ease })
       // Return the photograph to document flow before scrolling becomes available.
       const travel = [...animations]
+      // Paper and title dissolve as the map docks; ink stays spatially registered.
+      // Keep these animations alive when the positioning animations release at 1.6s.
+      if (root.dataset.cutoutsReady === 'true') {
+        animate(original, [{ opacity: 1 }, { opacity: 0 }], DISSOLVE)
+        animate(cutouts, [{ opacity: 0 }, { opacity: 1 }], DISSOLVE)
+      }
       const dock = () => {
         if (!alive || !running || !unlock) return
         travel.forEach(animation => animation.cancel())
@@ -69,11 +81,11 @@ export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
         root.dataset.intro = 'revealing'
         releaseScroll()
       }
-      dockTimer = window.setTimeout(dock, 1600)
+      dockTimer = window.setTimeout(dock, DOCK_TIME)
       const titleMotion = animateHeroTitle(title)
       animations.push(...titleMotion)
       root.querySelectorAll('.hero-meta, .hero-notes, .hero-brand').forEach(element => {
-        animate(element, element.classList.contains('hero-brand') ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 600, delay: 1600, easing: 'cubic-bezier(.22,1,.36,1)' })
+        animate(element, element.classList.contains('hero-brand') ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 600, delay: DOCK_TIME, easing: 'cubic-bezier(.22,1,.36,1)' })
       })
       // The photo releases scrolling at 1.6s; the typography finishes independently.
       const last = titleMotion.at(-1)!
@@ -90,8 +102,12 @@ export function useHeroIntro(ref: RefObject<HTMLElement | null>) {
       if (['Tab', 'Escape'].includes(event.key)) interrupt()
       else if (unlock && ['PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End', ' '].includes(event.key)) event.preventDefault()
     }
-    void Promise.allSettled([document.fonts.ready, image.decode()]).then(() => {
+    const cutoutImages = [...cutouts.querySelectorAll('img')]
+    const cutoutReadiness = Promise.allSettled(cutoutImages.map(image => image.decode()))
+      .then(results => results.length > 0 && results.every(result => result.status === 'fulfilled'))
+    void Promise.all([Promise.allSettled([document.fonts.ready, original.decode()]), cutoutReadiness]).then(([, cutoutsReady]) => {
       if (!alive) return
+      root.dataset.cutoutsReady = String(cutoutsReady)
       loaded = true
       const rect = root.getBoundingClientRect()
       if (rect.top >= -2 && rect.top < 40) play()

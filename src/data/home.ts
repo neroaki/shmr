@@ -2,7 +2,9 @@ import museumShm1 from '../assets/images/shm1.webp'
 import museumShm2 from '../assets/images/shm2.webp'
 import educationPoster from '../assets/images/about-education.webp'
 import eventPoster from '../assets/images/about-event.webp'
-import street from '../assets/images/gyeongseong-street.webp'
+import suseonOriginal from '../assets/images/suseonjeondo-original.jpg'
+import suseonLight from '../assets/images/suseonjeondo-light.png'
+import suseonDark from '../assets/images/suseonjeondo-dark.png'
 import urbanPoster from '../assets/images/seoul-urban-planning-2026.jpg'
 import defensePoster from '../assets/images/yeomin-gongsu-2026.jpg'
 import taehwagwanPoster from '../assets/images/taehwagwan-2026.jpg'
@@ -39,10 +41,18 @@ export const navigation = [
 
 // Replace the image, dimensions, description and source together.
 export const hero = {
-  image: street, width: 3313, height: 2104,
-  alt: 'A sepia photograph of Gyeongseong showing a tram, pedestrians and buildings along a broad street',
-  title: 'Gyeongseong street scene',
-  // User-supplied photograph: do not inherit the former panorama's 1925 date or source.
+  image: suseonOriginal, lightImage: suseonLight, darkImage: suseonDark,
+  width: 1429, height: 1984,
+  alt: '수선전도 — 한양의 산맥, 궁궐과 도성 안팎의 길을 그린 지도',
+  // Museum's English exhibition terminology; the heritage portal also uses "Suseon jeondo".
+  // https://museum.seoul.go.kr/eng/exhibition/outdoorExhibitArea.jsp
+  title: 'SUSEON JEONDO / SEOUL',
+  // Paraphrased from the Seoul Institute's entry for the museum's print (서2080).
+  // https://data.si.re.kr/data-seoul/지도로-본-서울-2013/70
+  description: [
+    'A woodblock map of Hanyang, the Joseon capital.',
+    'Mountains, streams and palaces frame the city, with detailed streets inside its walls and a wider landscape beyond.',
+  ],
 }
 
 export const exhibitions = [

@@ -1,4 +1,8 @@
+@use 'sass:math';
 @use '../styles/typography' as type;
+
+$map-aspect-ratio: math.div(1429, 1984);
+$map-bottom-inset: .058;
 
 .hero {
   position: relative;
@@ -13,48 +17,63 @@
 .hero-meta {
   display: flex; justify-content: space-between; gap: 1rem;
   padding: 1.25rem var(--inner-gutter) 0;
-   color: var(--color-muted);
+  color: var(--color-muted);
 }
 .hero-figure {
-  container-type: inline-size;
+  --hero-map-width: min(36vw, 38.895svh, 47.5rem);
+  // Relative positioning also moves the measured docking target without trapping
+  // the fixed intro image in a transformed containing block.
+  position: relative; top: -6vh; left: -3vw;
   width: 100%; display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, min(43vw, max(28rem, 27vw))) minmax(0, 1fr);
-  column-gap: clamp(1rem, 1.15vw, 2.75rem); align-items: stretch;
+  grid-template-columns: minmax(0, 1fr) var(--hero-map-width) minmax(0, 1fr);
+  // Scale the gap with the viewport while keeping a readable minimum clearance.
+  column-gap: clamp(.7rem, 1.4vw, 2.24rem); align-items: stretch;
 }
 .hero-photo-slot {
   grid-column: 2; position: relative;
+  left: var(--hero-map-shift, 0px);
   // Text may increase the row height; it must never widen the photograph into its caption.
   width: 100%; min-width: 0; align-self: start;
-  aspect-ratio: 3313 / 2104;
+  aspect-ratio: $map-aspect-ratio;
 }
 .hero-photo {
-  position: absolute; inset: 0; overflow: hidden; background: #b4a38f;
-  img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 50%; }
+  position: absolute; inset: 0; overflow: hidden;
+  img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: contain; }
 }
-.hero-photo-shade { position: absolute; inset: 0; background: #15120f; pointer-events: none; opacity: 0; }
+.hero-photo-artwork, .hero-map-cutouts { position: absolute; inset: 0; }
+.hero-map-original { opacity: 0; }
+.hero-map-cutouts { opacity: 1; }
+.hero-map-light { opacity: 0; }
+.hero-map-dark { opacity: 1; }
+:root[data-theme='light'] {
+  .hero-map-light { opacity: 1; }
+  .hero-map-dark { opacity: 0; }
+}
+.hero[data-intro='preparing'], .hero[data-intro='playing'] {
+  .hero-map-original { opacity: 1; }
+  .hero-map-cutouts { opacity: 0; }
+}
+.hero[data-cutouts-ready='false'] {
+  .hero-map-original { opacity: 1; }
+  .hero-map-cutouts { opacity: 0; }
+}
 .hero-notes {
-  grid-column: 3; display: flex; flex-direction: column; justify-content: space-between;
-  width: min(100%, clamp(14rem, 15vw, 30rem)); gap: clamp(1.25rem, 2svh, 3rem);
-  min-width: 0; margin-top: 0;
-  height: 100%;
+  grid-column: 3; align-self: end; justify-self: start;
+  position: relative; left: var(--hero-notes-shift, 0px);
+  display: flex; flex-direction: column; gap: clamp(2rem, 4svh, 4rem);
+  width: max-content; max-width: 100%;
+  // Align with the visible ink, excluding the transparent bottom of the scan.
+  min-width: 0; margin: 0 0 calc(var(--hero-map-width) / (#{$map-aspect-ratio}) * #{$map-bottom-inset});
   color: var(--color-muted);
 }
-.hero-story {
-  display: flex; flex-direction: column; align-items: flex-start; gap: clamp(.65rem, 1.2svh, 1.5rem);
-  .hero-question { color: var(--color-text); }
-  a {
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: .2em;
-    display: inline-flex;
-    gap: 1.5rem;
-    &:hover { text-decoration: none; }
-  }
+.hero-map-description {
+  // Only the caption determines the intrinsic width; the prose wraps to match it.
+  width: 0; min-width: 100%;
+  display: flex; flex-direction: column; gap: 1.2em;
+  line-height: 1.8; text-wrap: pretty;
+  word-break: normal;
 }
-.hero-reflection {
-
-  span { display: block; }
-  .hero-reflection-date { margin-bottom: .7rem; text-transform: uppercase; }
-}
+.hero-map-caption { color: var(--color-text); letter-spacing: .035em; }
 .hero-title {
   position: relative; z-index: 3;
   display: flex; justify-content: center; gap: .18em; padding-inline: var(--inner-gutter);
@@ -110,8 +129,7 @@
   .hero-meta, .hero-notes, .hero-brand { pointer-events: none; }
 }
 @media (max-width: 1100px) {
-  .hero-figure { grid-template-columns: .65fr minmax(0, 43vw) 1fr; }
-
+  .hero-figure { --hero-map-width: min(43vw, 38.895svh); }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero[data-intro='preparing'] {
@@ -132,14 +150,7 @@
 
 // Semantic typography: shared across sections and locales.
 .hero-meta, .theme-toggle { @include type.role(ui); }
-.hero-notes, .hero-reflection, .hero-reflection-date { @include type.role(meta); }
+.hero-notes { @include type.role(meta); }
 .theme-toggle-state { @include type.role(ui); }
-.hero-question { @include type.role(meta); }
 .hero-title { @include type.role(display); }
 .hero-title { font-family: var(--font-latin); }
-
-// Caption density follows the photograph's available space, including narrow desktop windows.
-@container (max-width: 1150px) {
-  .hero-story > p { display: none; }
-  .hero-notes { justify-content: flex-end; gap: 1.5rem; }
-}
