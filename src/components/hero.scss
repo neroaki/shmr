@@ -60,7 +60,7 @@ $map-bottom-inset: .058;
 .hero-notes {
   grid-column: 3; align-self: end; justify-self: start;
   position: relative; left: var(--hero-notes-shift, 0px);
-  display: flex; flex-direction: column; gap: clamp(2rem, 4svh, 4rem);
+  display: flex; flex-direction: column; gap: clamp(.875rem, 1.5svh, 1.5rem);
   width: max-content; max-width: 100%;
   // Align with the visible ink, excluding the transparent bottom of the scan.
   min-width: 0; margin: 0 0 calc(var(--hero-map-width) / (#{$map-aspect-ratio}) * #{$map-bottom-inset});
@@ -73,7 +73,13 @@ $map-bottom-inset: .058;
   line-height: 1.8; text-wrap: pretty;
   word-break: normal;
 }
-.hero-map-caption { color: var(--color-text); letter-spacing: .035em; }
+.hero-map-caption {
+  color: var(--color-text);
+  font-size: var(--type-support-size);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: .045em;
+}
 .hero-title {
   position: relative; z-index: 3;
   display: flex; justify-content: center; gap: .18em; padding-inline: var(--inner-gutter);

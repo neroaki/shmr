@@ -34,10 +34,10 @@ export function Hero() {
             </div>
           </div>
           <figcaption className="hero-notes" lang="en">
+            <p className="hero-map-caption">{hero.title}</p>
             <div className="hero-map-description">
               {hero.description.map(paragraph => <p key={paragraph}>{paragraph}</p>)}
             </div>
-            <p className="hero-map-caption">{hero.title}</p>
           </figcaption>
         </figure>
       </div>
